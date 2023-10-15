@@ -751,6 +751,10 @@ namespace Intersect.Server.Entities
             }
 
             PacketSender.SendEntityCastTime(this, spellId);
+            if (spellBase.CastDuration >= 10)
+            {
+                PacketSender.SendActionMsg(this, spellBase.Name.ToString() + " !", CustomColors.Combat.MagicDamage);
+            }
         }
 
         public bool IsFleeing()
