@@ -924,7 +924,23 @@ namespace Intersect.Server.Entities
         //Returns the amount of time required to traverse 1 tile
         public virtual float GetMovementTime()
         {
-            var time = 1000f / (float)(1 + Math.Log(Stat[(int)Enums.Stat.Speed].Value()));
+            const float maxSpeed = 5000f;
+            const float minTime = 150f;
+
+            // Calcula o valor de time com base no valor atual de Speed
+            float CalculateTime(float speed)
+            {
+                // Garante que speed esteja dentro dos limites
+                speed = Math.Min(speed, maxSpeed);
+
+                // Calcula o valor de time de forma inversamente proporcional aos limites
+                return minTime + ((maxSpeed - speed) / maxSpeed) * (1000f - minTime);
+            }
+
+            // Obtém o valor atual de Speed e calcula o valor de time correspondente
+            float currentSpeed = Stat[(int)Enums.Stat.Speed].Value();
+            float time = CalculateTime(currentSpeed);
+
             if (Dir > Direction.Right)
             {
                 time *= MathHelper.UnitDiagonalLength;
