@@ -5180,6 +5180,10 @@ namespace Intersect.Server.Entities
 
                     break;
             }
+            if (spellBase.CastDuration >= 10)
+            {
+                PacketSender.SendActionMsg(this, spellBase.Name.ToString() + " !", CustomColors.Combat.MagicDamage);
+            }
         }
 
         public bool TryGetEquipmentSlot(int equipmentSlot, out int inventorySlot)
