@@ -1,14 +1,14 @@
 <Project>
   <PropertyGroup Label="Package Properties">
-    <Authors>Douglas Mello - The Celtos</Authors>
-    <Copyright>Copyright © The Celtos 2012</Copyright>
-    <Description>The Celtos MMORPG 2D</Description>
+    <Authors>Ascension Game Development</Authors>
+    <Copyright>Copyright © Ascension Game Dev 2022</Copyright>
+    <Description>Intersect 2D Game Creation Suite</Description>
     <PackageIcon>$(IntersectRepoPath)\assets\intersect-logo-qu.png</PackageIcon>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <Product>The Celtos</Product>
+    <Product>Intersect Game Engine</Product>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/theceltos/Intersect-Engine</RepositoryUrl>
-    <Version>1.0.1.0</Version>
+    <RepositoryUrl>https://github.com/AscensionGameDev/Intersect-Engine</RepositoryUrl>
+    <Version>0.7.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Label="Assembly Properties">

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -12,17 +12,13 @@
 
   <PropertyGroup>
     <PackageId>AscensionGameDev.Intersect.Client</PackageId>
-    <Description>Cliente - Parte do software The Celtos.</Description>
+    <Description>Game Client - Part of the Intersect 2D Game Creation Suite</Description>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RootNamespace>Intersect.Client</RootNamespace>
     <AssemblyName>Intersect Client</AssemblyName>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <FileAlignment>512</FileAlignment>
-    <Version>1.0.1.0</Version>
-    <Authors>The Celtos</Authors>
-    <Product>The Celtos</Product>
-    <Copyright>Copyright © The Celtos 2012</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
