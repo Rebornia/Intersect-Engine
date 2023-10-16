@@ -206,6 +206,9 @@ namespace Intersect.Server.Entities
         [NotMapped, JsonIgnore]
         public bool IsCasting => CastTime > Timing.Global.Milliseconds;
 
+        [NotMapped, JsonIgnore]
+        public bool IsTurnAroundWhileCastingDisabled => !Options.Instance.CombatOpts.EnableTurnAroundWhileCasting && IsCasting;
+
         //Visuals
         [NotMapped, JsonIgnore]
         public bool HideName { get; set; }
@@ -2750,7 +2753,7 @@ namespace Intersect.Server.Entities
 
         protected Direction DirectionToTarget(Entity en)
         {
-            if (en == null)
+            if (en == null || IsTurnAroundWhileCastingDisabled)
             {
                 return Dir;
             }
