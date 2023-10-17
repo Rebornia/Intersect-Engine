@@ -104,8 +104,8 @@ namespace Intersect.Client.Core.Controls
             CreateControlMap(Control.OpenAdminPanel, new ControlValue(Keys.None, Keys.Insert), ControlValue.Default);
             CreateControlMap(Control.ToggleGui, new ControlValue(Keys.None, Keys.F11), ControlValue.Default);
             CreateControlMap(Control.TurnAround, new ControlValue(Keys.None, Keys.Control), ControlValue.Default);
-            CreateControlMap(Control.ToggleZoomIn, ControlValue.Default, ControlValue.Default);
-            CreateControlMap(Control.ToggleZoomOut, ControlValue.Default, ControlValue.Default);
+            CreateControlMap(Control.ToggleZoomIn, new ControlValue(Keys.Alt, Keys.Add), ControlValue.Default);
+            CreateControlMap(Control.ToggleZoomOut, new ControlValue(Keys.Alt, Keys.Subtract), ControlValue.Default);
             CreateControlMap(Control.HoldToZoomIn, ControlValue.Default, ControlValue.Default);
             CreateControlMap(Control.HoldToZoomOut, ControlValue.Default, ControlValue.Default);
             CreateControlMap(Control.ToggleFullscreen, new ControlValue(Keys.Alt, Keys.Enter), ControlValue.Default);
