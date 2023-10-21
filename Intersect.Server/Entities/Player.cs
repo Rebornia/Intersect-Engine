@@ -1147,8 +1147,15 @@ namespace Intersect.Server.Entities
             {
                 Exp = 0;
             }
-
-            PacketSender.SendChatMsg(this, amount + " XP adquiridos!", ChatMessageType.Notice, CustomColors.Alerts.Success);
+            if (amount == 0)
+            {
+                PacketSender.SendChatMsg(this,"Nenhuma XP adquirida!", ChatMessageType.Notice, CustomColors.Alerts.Error);
+            }
+            else
+            {
+                PacketSender.SendChatMsg(this, amount + " XP adquiridos!", ChatMessageType.Notice, CustomColors.Alerts.Success);
+            }
+            
 
 
             if (!CheckLevelUp())
