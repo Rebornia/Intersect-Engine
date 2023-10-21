@@ -1204,8 +1204,6 @@ namespace Intersect.Server.Entities
                 case Npc npc:
                     {
 
-                        int LevelMonstro = npc.Base.Level; // Nível do monstro (ajuste conforme necessário)
-                        int LevelPlayer = Level; // Nível do jogador (ajuste conforme necessário)
                         int LevelRangeLimit = 15; // Limite de diferença de níveis
 
                         var descriptor = npc.Base;
@@ -1218,25 +1216,9 @@ namespace Intersect.Server.Entities
                             var partyMembersInXpRange = Party.Where(partyMember => partyMember.InRangeOf(this, Options.Party.SharedXpRange)).ToArray();
                             float bonusExp = Options.Instance.PartyOpts.BonusExperiencePercentPerMember / 100;
                             var multiplier = 1.0f + (partyMembersInXpRange.Length * bonusExp);
-
-
-                            
+                            var partyExperience = (int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length;
                             foreach (var partyMember in partyMembersInXpRange)
                             {
-                                // Calcula a diferença de níveis (tanto para cima quanto para baixo)
-                                int diferencaNiveis = Math.Abs(LevelMonstro - partyMember.Level);
-
-                                var partyExperience = ((int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length);
-
-                                if (diferencaNiveis == 0)
-                                {
-                                    partyExperience = ((int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length);
-                                }
-                                else
-                                {
-                                    partyExperience = ((int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length) / diferencaNiveis;
-                                }
-
                                 if (npc.Base.Level <= Level + LevelRangeLimit && npc.Base.Level >= Level - LevelRangeLimit | npc.Base.Level <= partyMember.Level + LevelRangeLimit && npc.Base.Level >= partyMember.Level - LevelRangeLimit) // Caso estiver dentro do Range de Nivel, ganhará a XP
                                 {
                                     partyMember.GiveExperience(partyExperience);
@@ -1259,36 +1241,12 @@ namespace Intersect.Server.Entities
                         }
                         else
                         {
-                            int XPLimpa = int.Parse(descriptor.Experience.ToString());
-                            int XPGanhaFormulada;
-
-                            // Calcula a diferença de níveis (tanto para cima quanto para baixo)
-                            long diferencaNiveis = Math.Abs(LevelMonstro - LevelPlayer);
-
-                            // Se a diferença de níveis for maior que Leveldediferenca, ajusta para Leveldediferenca
-                            if (diferencaNiveis > LevelRangeLimit)
+                            if (npc.Base.Level <= Level + LevelRangeLimit && npc.Base.Level >= Level - LevelRangeLimit) // Caso estiver dentro do Range de Nivel, ganhará a XP
                             {
-                                diferencaNiveis = LevelRangeLimit;
+                                GiveExperience(descriptor.Experience);
                             }
-                            // Se a diferença de níveis for negativa, ajusta para 0
-                            if (diferencaNiveis < 0)
-                            {
-                                diferencaNiveis = 0;
-                            }
-
-                            int diferencaNiveisInt = Convert.ToInt32(diferencaNiveis);
-
-                            // Calcula a XP que o jogador ganhará do monstro usando a fórmula ajustada
-                            XPGanhaFormulada = XPLimpa - (int)((XPLimpa * diferencaNiveis) / (float)LevelRangeLimit);
-
-                            // Garante que XPGanha não seja negativo
-                            XPGanhaFormulada = XPGanhaFormulada < 0 ? 0 : XPGanhaFormulada;
-
-                            // O resultado final da XP que o jogador ganhará (arredondado para o inteiro mais próximo)
-                            XPGanhaFormulada = XPGanhaFormulada;
-
-                            GiveExperience(XPGanhaFormulada);
                             UpdateQuestKillTasks(entity);
+
                         }
 
                         if (playerEvent != null)
