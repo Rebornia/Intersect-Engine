@@ -1211,18 +1211,30 @@ namespace Intersect.Server.Entities
                             var partyMembersInXpRange = Party.Where(partyMember => partyMember.InRangeOf(this, Options.Party.SharedXpRange)).ToArray();
                             float bonusExp = Options.Instance.PartyOpts.BonusExperiencePercentPerMember / 100;
                             var multiplier = 1.0f + (partyMembersInXpRange.Length * bonusExp);
-                            var partyExperience = (int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length;
+
+
+                            
                             foreach (var partyMember in partyMembersInXpRange)
                             {
+                                // Calcula a diferença de níveis (tanto para cima quanto para baixo)
+                                int diferencaNiveis = Math.Abs(LevelMonstro - partyMember.Level);
+
+                                var partyExperience = ((int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length);
+
+                                if (diferencaNiveis == 0)
+                                {
+                                    partyExperience = ((int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length);
+                                }
+                                else
+                                {
+                                    partyExperience = ((int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length) / diferencaNiveis;
+                                }
 
                                 if (npc.Base.Level <= Level + LevelRangeLimit && npc.Base.Level >= Level - LevelRangeLimit | npc.Base.Level <= partyMember.Level + LevelRangeLimit && npc.Base.Level >= partyMember.Level - LevelRangeLimit) // Caso estiver dentro do Range de Nivel, ganhará a XP
                                 {
                                     partyMember.GiveExperience(partyExperience);
 
                                 }
-
-                                partyMember.UpdateQuestKillTasks(entity);
-
 
                                 partyMember.UpdateQuestKillTasks(entity);
                             }
