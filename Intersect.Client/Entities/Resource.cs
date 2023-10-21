@@ -287,10 +287,27 @@ namespace Intersect.Client.Entities
             {
                 return;
             }
+            var x = (int)Math.Floor(Globals.InputManager.GetMousePosition().X + Graphics.CurrentView.Left); // MOUSE X
+            var y = (int)Math.Floor(Globals.InputManager.GetMousePosition().Y + Graphics.CurrentView.Top); // MOUSE Y
 
+
+            var xleftitem = mDestRectangle.X;
+            var xrightitem = xleftitem + mSrcRectangle.Width;
+            var ytopitem = mDestRectangle.Y + mSrcRectangle.Height;
+            var ybottomitem = ytopitem - mSrcRectangle.Height;
             if (Texture != null)
             {
-                Graphics.DrawGameTexture(Texture, mSrcRectangle, mDestRectangle, Intersect.Color.White);
+                if (x > xleftitem && x < xrightitem && y < ytopitem && y > ybottomitem)
+                {
+
+                    Graphics.DrawGameTexture(Texture, mSrcRectangle, mDestRectangle, Color.FromArgb(100, 255, 255, 255));
+                }
+                else
+                {
+                    Graphics.DrawGameTexture(Texture, mSrcRectangle, mDestRectangle, Color.FromArgb(255, 255, 255, 255));
+
+
+                }
             }
         }
 
