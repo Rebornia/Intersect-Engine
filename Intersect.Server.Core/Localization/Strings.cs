@@ -1193,8 +1193,6 @@ namespace Intersect.Server.Localization
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)] public readonly LocalizedString demod = @"{00} has had their moderation powers revoked!";
 
-            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)] public readonly LocalizedString haswarpedto = @"{00} has been warped to you.";
-
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)] public readonly LocalizedString joined = @"{00} has joined {01}.";
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)] public readonly LocalizedString kicked = @"{00} has been kicked by {01}!";
@@ -1235,8 +1233,6 @@ namespace Intersect.Server.Localization
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)] public readonly LocalizedString targetoutsiderange = @"Target not in range.";
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)] public readonly LocalizedString warpedto = @"Warped to {00}.";
-
-            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)] public readonly LocalizedString warpedtoyou = @"{00} warped to you.";
 
         }
 
