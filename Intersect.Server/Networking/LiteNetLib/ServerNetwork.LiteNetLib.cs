@@ -67,7 +67,8 @@ public class ServerNetwork : AbstractNetwork, IServer
     )
     {
         Log.Info($"Connected [{connectionEventArgs.Connection?.Guid}].");
-        Client.CreateBeta4Client(Context, this, connectionEventArgs.Connection);
+        var client = Client.CreateBeta4Client(Context, this, connectionEventArgs.Connection);
+        PacketSender.SendPing(client);
         OnConnected?.Invoke(sender, connectionEventArgs);
     }
 
@@ -129,6 +130,8 @@ public class ServerNetwork : AbstractNetwork, IServer
         return !string.IsNullOrEmpty(connection?.Ip);
     }
 
+    public override bool IsConnected => Connections.Any();
+
     public override event HandleConnectionEvent OnConnected;
     public override event HandleConnectionEvent OnConnectionApproved;
     public override event HandleConnectionEvent OnConnectionDenied;
@@ -136,6 +139,8 @@ public class ServerNetwork : AbstractNetwork, IServer
     public override event HandleConnectionEvent OnDisconnected;
     public override event HandlePacketAvailable OnPacketAvailable;
     public override event HandleUnconnectedMessage OnUnconnectedMessage;
+
+    public override void Close() => Disconnect("closing");
 
     protected override bool SendUnconnected(IPEndPoint endPoint, UnconnectedPacket packet) =>
         RunForInterface<LiteNetLibInterface>(

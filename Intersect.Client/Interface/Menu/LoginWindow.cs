@@ -52,7 +52,7 @@ namespace Intersect.Client.Interface.Menu
         private bool mUseSavedPass;
 
         //Init
-        public LoginWindow(Canvas parent, MainMenu mainMenu, ImagePanel parentPanel)
+        public LoginWindow(Canvas parent, MainMenu mainMenu)
         {
             //Assign References
             mMainMenu = mainMenu;
@@ -231,10 +231,10 @@ namespace Intersect.Client.Interface.Menu
                 password = ComputePasswordHash(mPasswordTextbox?.Text?.Trim());
             }
 
-            PacketSender.SendLogin(mUsernameTextbox?.Text, password);
-            SaveCredentials();
             Globals.WaitingOnServer = true;
             mLoginBtn.Disable();
+            PacketSender.SendLogin(mUsernameTextbox?.Text, password);
+            SaveCredentials();
             ChatboxMsg.ClearMessages();
         }
 
