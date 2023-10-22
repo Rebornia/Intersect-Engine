@@ -324,11 +324,18 @@ namespace Intersect.Client.Interface.Game.DescriptionWindows
             }
 
             // Stats
-            if (mItemProperties?.StatModifiers != default)
+            var statModifiers = mItemProperties?.StatModifiers;
+            for (var i = 0; i < (int)Stat.StatCount; i++)
             {
-                for (var i = 0; i < (int)Stat.StatCount; i++)
+                // Do we have item properties, if so this is a finished item. Otherwise does this item not have growing stats?
+                if (statModifiers != default || mItem.StatGrowth == 0)
                 {
-                    var flatStat = mItem.StatsGiven[i] + mItemProperties.StatModifiers[i];
+                    var flatStat = mItem.StatsGiven[i];
+                    if (statModifiers != default)
+                    {
+                        flatStat += statModifiers[i];
+                    }
+
                     if (flatStat != 0 && mItem.PercentageStatsGiven[i] != 0)
                     {
                         rows.AddKeyValueRow(Strings.ItemDescription.StatCounts[i], Strings.ItemDescription.RegularAndPercentage.ToString(flatStat, mItem.PercentageStatsGiven[i]));
@@ -342,6 +349,22 @@ namespace Intersect.Client.Interface.Game.DescriptionWindows
                         rows.AddKeyValueRow(Strings.ItemDescription.StatCounts[i], Strings.ItemDescription.Percentage.ToString(mItem.PercentageStatsGiven[i]));
                     }
                 }
+                // We do not have item properties and have growing stats! So don't display a finished stat but a range instead.
+                else
+                {
+                    var statLow = mItem.StatsGiven[i] - mItem.StatGrowth;
+                    var statHigh = mItem.StatsGiven[i] + mItem.StatGrowth;
+
+                    if (mItem.PercentageStatsGiven[i] != 0)
+                    {
+                        rows.AddKeyValueRow(Strings.ItemDescription.StatCounts[i], Strings.ItemDescription.RegularAndPercentage.ToString(Strings.ItemDescription.StatGrowthRange.ToString(statLow, statHigh), mItem.PercentageStatsGiven[i]));
+                    }
+                    else
+                    {
+                        rows.AddKeyValueRow(Strings.ItemDescription.StatCounts[i], Strings.ItemDescription.StatGrowthRange.ToString(statLow, statHigh));
+                    }
+                }
+                
             }
 
             // Bonus Effect
