@@ -402,8 +402,7 @@ namespace Intersect.Server.Admin.Actions
                 var forceInstanceChange = target.InstanceType != player.InstanceType;
                 player.AdminWarp(target.MapId, (byte)target.X, (byte)target.Y, target.MapInstanceId, target.InstanceType, forceInstanceChange);
                 PacketSender.SendChatMsg(player, Strings.Player.warpedto.ToString(target.Name), ChatMessageType.Admin);
-                PacketSender.SendChatMsg(
-                    target, Strings.Player.warpedtoyou.ToString(player.Name), ChatMessageType.Notice
+
                 );
             }
             else
@@ -455,10 +454,6 @@ namespace Intersect.Server.Admin.Actions
                 var forceInstanceChange = target.InstanceType != player.InstanceType;
 
                 target.AdminWarp(player.MapId, (byte)player.X, (byte)player.Y, player.MapInstanceId, player.InstanceType, forceInstanceChange);
-                PacketSender.SendChatMsg(
-                    player, Strings.Player.haswarpedto.ToString(target.Name), ChatMessageType.Admin, player.Name
-                );
-
                 PacketSender.SendChatMsg(
                     target, Strings.Player.beenwarpedto.ToString(player.Name), ChatMessageType.Notice, player.Name
                 );

@@ -30,12 +30,6 @@ namespace Intersect.Config
         /// The style of the game's border.
         /// 0: Smart borders, 1: Non-seamless, 2: Black borders
         /// </summary>
-        public bool DisablePlayerDropsInArenaMaps { get; set; } = false;
-
-        /// <summary>
-        /// The style of the game's border.
-        /// 0: Smart borders, 1: Non-seamless, 2: Black borders
-        /// </summary>
         public int GameBorderStyle { get; set; }
 
         /// <summary>
