@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -21,6 +21,12 @@ namespace Intersect.Config
                 MovementDirections = mEnableDiagonalMovement ? 8 : 4;
             }
         }
+
+        /// <summary>
+        /// The style of the game's border.
+        /// 0: Smart borders, 1: Non-seamless, 2: Black borders
+        /// </summary>
+        public bool DisablePlayerDropsInArenaMaps { get; set; } = false;
 
         /// <summary>
         /// The style of the game's border.
