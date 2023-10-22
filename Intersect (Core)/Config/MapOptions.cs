@@ -21,6 +21,10 @@ namespace Intersect.Config
                 MovementDirections = mEnableDiagonalMovement ? 8 : 4;
             }
         }
+        /// <summary>
+        /// option to drop items on arena type maps
+        /// </summary>
+        public bool DisablePlayerDropsInArenaMaps { get; set; } = false;
 
         /// <summary>
         /// The style of the game's border.
@@ -85,20 +89,6 @@ namespace Intersect.Config
 
         // A private field to hold the value of the EnableDiagonalMovement.
         private bool mEnableDiagonalMovement;
-
-        [Obsolete("Renamed to MapHeight, this will be removed in 0.8-beta.", true)]
-        public int Height
-        {
-            get => MapHeight;
-            set => MapHeight = value;
-        }
-
-        [Obsolete("Renamed to MapWidth, this will be removed in 0.8-beta.", true)]
-        public int Width
-        {
-            get => MapWidth;
-            set => MapWidth = value;
-        }
 
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context)

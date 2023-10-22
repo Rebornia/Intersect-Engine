@@ -2963,14 +2963,7 @@ namespace Intersect.Server.Entities
 
         protected virtual void DropItems(Entity killer, bool sendUpdate = true)
         {
-            if (Options.Instance.MapOpts.DisablePlayerDropsInArenaMaps = true)
-            {
-                if (Map.ZoneType == MapZone.Arena && this is Player) // Don't Drop Items in Arena
-                {
-                    return;
-                }  
-            }
-            
+
             // Drop items
             foreach (var slot in Items)
             {
