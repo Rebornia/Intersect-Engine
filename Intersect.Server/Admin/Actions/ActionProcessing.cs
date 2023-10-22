@@ -401,9 +401,6 @@ namespace Intersect.Server.Admin.Actions
             {
                 var forceInstanceChange = target.InstanceType != player.InstanceType;
                 player.AdminWarp(target.MapId, (byte)target.X, (byte)target.Y, target.MapInstanceId, target.InstanceType, forceInstanceChange);
-                PacketSender.SendChatMsg(player, Strings.Player.warpedto.ToString(target.Name), ChatMessageType.Admin);
-
-                );
             }
             else
             {
