@@ -1170,6 +1170,7 @@ namespace Intersect.Server.Entities
             {
                 return;
             }
+
             Exp -= amount;
             if (Exp < 0)
             {
