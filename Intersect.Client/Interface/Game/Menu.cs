@@ -12,6 +12,7 @@ using Intersect.Client.Localization;
 using Intersect.Client.Networking;
 using Intersect.Enums;
 using Intersect.GameObjects;
+using System.Diagnostics;
 
 namespace Intersect.Client.Interface.Game
 {

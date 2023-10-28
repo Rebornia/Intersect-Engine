@@ -1,3 +1,6 @@
+using System;
+using System.Diagnostics;
+using System.Security.Policy;
 using Intersect.Client.Core;
 using Intersect.Client.Framework.File_Management;
 using Intersect.Client.Framework.Gwen;
@@ -6,6 +9,7 @@ using Intersect.Client.Framework.Gwen.Control.EventArguments;
 using Intersect.Client.Interface.Shared;
 using Intersect.Client.Localization;
 using Intersect.Client.Networking;
+using Intersect.Configuration;
 using Intersect.Network;
 using Intersect.Utilities;
 
@@ -55,6 +59,8 @@ namespace Intersect.Client.Interface.Menu
 
         private bool mShouldOpenCharacterSelection;
 
+        private readonly Button mDiscordButton;
+
         private readonly MainMenuWindow _mainMenuWindow;
 
         //Init
@@ -68,6 +74,15 @@ namespace Intersect.Client.Interface.Menu
             logo.LoadJsonUi(GameContentManager.UI.Menu, Graphics.Renderer.GetResolutionString());
 
             NetworkStatusChanged += HandleNetworkStatusChanged;
+
+            //Discord Button
+            mDiscordButton = new Button(menuCanvas, "DiscordButton");
+            mDiscordButton.Clicked += DiscordButton_Clicked;
+            mDiscordButton.SetSize(220, 70);
+            mDiscordButton.CurAlignments.Add(Alignments.Bottom);
+            mDiscordButton.CurAlignments.Add(Alignments.Right);
+            mDiscordButton.ProcessAlignments();
+            mDiscordButton.LoadJsonUi(GameContentManager.UI.Menu, Graphics.Renderer.GetResolutionString());
 
             //Settings Controls
             mSettingsWindow = new SettingsWindow(menuCanvas, this, null);
@@ -258,7 +273,14 @@ namespace Intersect.Client.Interface.Menu
             NetworkStatusChanged?.Invoke();
             LastNetworkStatusChangeTime = Timing.Global.MillisecondsUtc;
         }
+        private void DiscordButton_Clicked(Base sender, ClickedEventArgs arguments)
+        {
 
-        public static long LastNetworkStatusChangeTime { get; private set; }
+            //Start Process
+            Process.Start(new ProcessStartInfo("https://discord.theceltos.com") { UseShellExecute = true });
+
+        }
+
+public static long LastNetworkStatusChangeTime { get; private set; }
     }
 }
