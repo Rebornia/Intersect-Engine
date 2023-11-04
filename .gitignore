@@ -221,3 +221,4 @@ packages/
 /assets/**
 !/assets/*.*
 vendor/LiteNetLib
+vendor/LiteNetLib
