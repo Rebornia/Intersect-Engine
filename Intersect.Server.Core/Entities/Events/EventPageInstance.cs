@@ -274,14 +274,14 @@ namespace Intersect.Server.Entities.Events
 
             packet = base.EntityPacket(packet, forPlayer);
 
-            var pkt = (EventEntityPacket) packet;
+            var pkt = (EventEntityPacket)packet;
             pkt.HideName = HideName;
             pkt.DirectionFix = mDirectionFix;
             pkt.WalkingAnim = mWalkingAnim;
             pkt.DisablePreview = DisablePreview;
             pkt.Description = MyPage.Description;
             pkt.Graphic = MyGraphic;
-            pkt.RenderLayer = (byte) mRenderLayer;
+            pkt.RenderLayer = (byte)mRenderLayer;
             pkt.Trigger = Trigger;
 
             return pkt;
@@ -316,7 +316,7 @@ namespace Intersect.Server.Entities.Events
 
         public override int[] GetStatValues()
         {
-            var stats = new int[(int)Enums.Stat.StatCount];
+            var stats = new int[Enum.GetValues<Stat>().Length];
             stats[(int)Enums.Stat.Speed] = Speed;
             return stats;
         }
@@ -708,7 +708,7 @@ namespace Intersect.Server.Entities.Events
 
                     if (MoveTimer < Timing.Global.Milliseconds)
                     {
-                        MoveTimer = Timing.Global.Milliseconds + (long) GetMovementTime();
+                        MoveTimer = Timing.Global.Milliseconds + (long)GetMovementTime();
                     }
                 }
             }
@@ -824,17 +824,31 @@ namespace Intersect.Server.Entities.Events
             return base.CanMoveInDirection(direction, out blockerType, out entityType);
         }
 
+        protected override bool CanLookInDirection(Direction direction)
+        {
+            return !mDirectionFix && base.CanLookInDirection(direction);
+        }
+
         public void TurnTowardsPlayer()
         {
-            Direction lookDir;
-            if (Player != null && GlobalClone == null) //Local Event
+            if (mDirectionFix)
             {
-                lookDir = GetDirectionTo(Player);
-                if (lookDir > Direction.None)
-                {
-                    ChangeDir(lookDir);
-                }
+                return;
             }
+
+            // Local Event
+            if (Player == null || GlobalClone != null)
+            {
+                return;
+            }
+
+            var lookDir = GetDirectionTo(Player);
+            if (!Enum.IsDefined(lookDir) || lookDir == Direction.None)
+            {
+                return;
+            }
+
+            ChangeDir(lookDir);
         }
 
         public bool ShouldDespawn(MapController map)
@@ -871,7 +885,8 @@ namespace Intersect.Server.Entities.Events
                     {
                         return true;
                     }
-                } else // Couldn't get map or mapInstance
+                }
+                else // Couldn't get map or mapInstance
                 {
                     return true;
                 }

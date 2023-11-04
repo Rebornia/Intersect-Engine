@@ -28,7 +28,6 @@ local.properties
 # PDT-specific
 .buildpath
 
-
 #################
 ## Visual Studio
 #################
@@ -178,7 +177,6 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
-
 #############
 ## Python
 #############
@@ -217,8 +215,5 @@ packages/
 .vs/
 .idea
 
-
 /assets/**
 !/assets/*.*
-vendor/LiteNetLib
-vendor/LiteNetLib

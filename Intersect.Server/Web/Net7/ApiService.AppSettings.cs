@@ -102,6 +102,11 @@ internal partial class ApiService
             apiConfiguration.TokenGenerationOptions.Issuer = TokenGenerationOptions.DefaultIssuer;
         }
 
+        if (apiConfiguration.StaticFilePaths == default)
+        {
+            apiConfiguration.StaticFilePaths = new List<StaticFilePathOptions> { new("wwwroot") };
+        }
+
         var updatedApiConfigurationJObject = JObject.FromObject(apiConfiguration);
         configurationJObject["Api"] = updatedApiConfigurationJObject;
 
@@ -178,6 +183,13 @@ internal partial class ApiService
             {
                 var certificatePath = certificate.Value<string>("Path");
                 var keyPath = certificate.Value<string>("KeyPath");
+
+#if DEBUG
+                if (File.Exists(SelfSignedCertificateName) && File.Exists(SelfSignedKeyName))
+                {
+                    return;
+                }
+#endif
 
                 if (!string.Equals(certificatePath, SelfSignedCertificateName) ||
                     !string.Equals(keyPath, SelfSignedKeyName))

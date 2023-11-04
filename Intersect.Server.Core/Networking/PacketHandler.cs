@@ -394,7 +394,7 @@ namespace Intersect.Server.Networking
                          naturalWithPing && naturalWithError ||
                          naturalWithError && natural)
                 {
-                    client.TimedBufferPacketsRemaining += (int) Math.Ceiling(
+                    client.TimedBufferPacketsRemaining += (int)Math.Ceiling(
                         (configurableAllowedSpikePackets - client.TimedBufferPacketsRemaining) / 2.0
                     );
                 }
@@ -603,7 +603,7 @@ namespace Intersect.Server.Networking
             }
 
             // Send newly accounts with 0 characters thru the character creation menu.
-            if (client.Characters?.Count < 1)
+            if (client.Characters == default || client.Characters.Count < 1)
             {
                 PacketSender.SendGameObjects(client, GameObjectType.Class);
                 PacketSender.SendCreateCharacter(client);
@@ -617,7 +617,12 @@ namespace Intersect.Server.Networking
             }
             else
             {
-                client.LoadCharacter(client.Characters?.First());
+                var character = DbInterface.GetUserCharacter(
+                    client.User,
+                    client.Characters.First().Id,
+                    explicitLoad: true
+                );
+                client.LoadCharacter(character);
                 client.Entity.SetOnline();
                 PacketSender.SendJoinGame(client);
             }
@@ -654,13 +659,17 @@ namespace Intersect.Server.Networking
         public void HandlePacket(Client client, NeedMapPacket packet)
         {
             var player = client?.Entity;
-            var map = MapController.Get(packet.MapId);
-            if (map != null)
+            foreach (var mapId in packet.MapIds)
             {
-                PacketSender.SendMap(client, packet.MapId);
-                if (player != null && packet.MapId == player.MapId)
+                if (!MapController.TryGet(mapId, out var mapController))
                 {
-                    PacketSender.SendMapGrid(client, map.MapGrid);
+                    continue;
+                }
+
+                PacketSender.SendMap(client, mapId);
+                if (player != null && mapId == player.MapId)
+                {
+                    PacketSender.SendMapGrid(client, mapController.MapGrid);
                 }
             }
         }
@@ -708,8 +717,8 @@ namespace Intersect.Server.Networking
                     var currentMs = packet.ReceiveTime;
                     if (player.MoveTimer > currentMs)
                     {
-                        player.MoveTimer = currentMs + latencyAdjustmentMs + (long) (player.GetMovementTime() * .75f);
-                        player.ClientMoveTimer = clientTime + (long) player.GetMovementTime();
+                        player.MoveTimer = currentMs + latencyAdjustmentMs + (long)(player.GetMovementTime() * .75f);
+                        player.ClientMoveTimer = clientTime + (long)player.GetMovementTime();
                     }
                 }
                 else
@@ -743,12 +752,12 @@ namespace Intersect.Server.Networking
 
             var msg = packet.Message;
             var channel = packet.Channel;
-            
+
             if (string.IsNullOrWhiteSpace(msg))
             {
                 return;
             }
-            
+
             if (client?.User.IsMuted ?? false) //Don't let the tongueless toxic kids speak.
             {
                 PacketSender.SendChatMsg(player, client?.User?.Mute?.Reason, ChatMessageType.Notice);
@@ -811,7 +820,7 @@ namespace Intersect.Server.Networking
                 msg = msg.Remove(0, cmd.Length);
             }
 
-            var msgSplit = msg.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            var msgSplit = msg.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (cmd == Strings.Chat.localcmd)
             {
@@ -835,7 +844,7 @@ namespace Intersect.Server.Networking
                     Strings.Chat.local.ToString(player.Name, msg), ChatMessageType.Local, player.MapId, player.MapInstanceId, chatColor,
                     player.Name
                 );
-                PacketSender.SendChatBubble(player.Id, player.MapInstanceId, (int) EntityType.GlobalEntity, msg, player.MapId);
+                PacketSender.SendChatBubble(player.Id, player.MapInstanceId, (int)EntityType.GlobalEntity, msg, player.MapId);
                 ChatHistory.LogMessage(player, msg.Trim(), ChatMessageType.Local, Guid.Empty);
             }
             else if (cmd == Strings.Chat.allcmd || cmd == Strings.Chat.globalcmd)
@@ -1498,10 +1507,10 @@ namespace Intersect.Server.Networking
 
             client.LoadCharacter(newChar);
 
-            newChar.SetVital(Vital.Health, classBase.BaseVital[(int) Vital.Health]);
-            newChar.SetVital(Vital.Mana, classBase.BaseVital[(int) Vital.Mana]);
+            newChar.SetVital(Vital.Health, classBase.BaseVital[(int)Vital.Health]);
+            newChar.SetVital(Vital.Mana, classBase.BaseVital[(int)Vital.Mana]);
 
-            for (var i = 0; i < (int) Stat.StatCount; i++)
+            for (var i = 0; i < Enum.GetValues<Stat>().Length; i++)
             {
                 newChar.Stat[i].BaseStat = 0;
             }
@@ -1547,8 +1556,13 @@ namespace Intersect.Server.Networking
             {
                 var map = MapController.Get(packet.MapId);
 
+                var lootDistance = Math.Min(
+                    Math.Min(Options.Instance.MapOpts.MapWidth, Options.Instance.MapOpts.MapHeight),
+                    Options.Loot.MaximumLootWindowDistance
+                );
+
                 // Is our user within range of the item they are trying to pick up?
-                if (player.GetDistanceTo(map, packet.TileIndex % Options.MapWidth, (int)Math.Floor(packet.TileIndex / (float)Options.MapWidth)) > Options.Loot.MaximumLootWindowDistance)
+                if (player.GetDistanceTo(map, packet.TileIndex % Options.MapWidth, (int)Math.Floor(packet.TileIndex / (float)Options.MapWidth)) > lootDistance)
                 {
                     return;
                 }
@@ -1558,7 +1572,7 @@ namespace Intersect.Server.Networking
                 if (packet.UniqueId == Guid.Empty)
                 {
                     // GET IT ALL! BE GREEDY!
-                    foreach (var itemMap in map.FindSurroundingTiles(new Point(player.X, player.Y), Options.Loot.MaximumLootWindowDistance))
+                    foreach (var itemMap in map.FindSurroundingTiles(new Point(player.X, player.Y), lootDistance))
                     {
                         var tempMap = itemMap.Key;
 
@@ -1566,7 +1580,7 @@ namespace Intersect.Server.Networking
                         {
                             continue;
                         }
-                        
+
                         if (!giveItems.ContainsKey(itemMap.Key))
                         {
                             giveItems.Add(tempMap, new List<MapItem>());
@@ -1852,7 +1866,7 @@ namespace Intersect.Server.Networking
                 return;
             }
 
-            lock(player.EntityLock)
+            lock (player.EntityLock)
             {
                 //if player hit stop button in crafting window
                 if (packet.CraftId == default)
@@ -1935,8 +1949,8 @@ namespace Intersect.Server.Networking
                 return;
             }
 
-            var target = packet.TargetId != Guid.Empty ? 
-                Player.FindOnline(packet.TargetId) : 
+            var target = packet.TargetId != Guid.Empty ?
+                Player.FindOnline(packet.TargetId) :
                 Player.FindOnline(packet.Target.Trim());
 
             if (target != null && target.Id != player.Id)

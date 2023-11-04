@@ -9,6 +9,7 @@ using DarkUI.Controls;
 using DarkUI.Forms;
 
 using Intersect.Editor.Content;
+using Intersect.Editor.Core;
 using Intersect.Editor.Forms.Editors.Events.Event_Commands;
 using Intersect.Editor.Localization;
 using Intersect.Editor.Maps;
@@ -21,6 +22,7 @@ using Intersect.GameObjects.Maps;
 using Intersect.Utilities;
 
 using Newtonsoft.Json;
+using Graphics = System.Drawing.Graphics;
 
 namespace Intersect.Editor.Forms.Editors.Events
 {

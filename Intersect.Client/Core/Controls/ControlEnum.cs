@@ -100,6 +100,14 @@ namespace Intersect.Client.Core.Controls
 
         ToggleFullscreen,
 
+        // Submit,
+        //
+        // Cancel,
+        //
+        // Previous,
+        //
+        // Next,
+
     }
 
 }

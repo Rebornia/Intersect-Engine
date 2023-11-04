@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using Intersect.Configuration;
 using Intersect.Enums;
@@ -612,7 +607,7 @@ namespace Intersect.Client.Localization
             public static LocalizedString toofast = @"You are chatting too fast!";
 
             public static LocalizedString ToggleLogButtonToolTip = @"Toggle chat log visibility";
-            
+
             public static LocalizedString ClearLogButtonToolTip = @"Clear chat log messages";
 
             public static Dictionary<ChatboxTab, LocalizedString> ChatTabButtons = new Dictionary<Enums.ChatboxTab, LocalizedString>() {
@@ -739,6 +734,10 @@ namespace Intersect.Client.Localization
                 {"togglezoomout", "Toggle Zoom Out:"},
                 {"holdtozoomout", "Hold to Zoom Out:"},
                 {"togglefullscreen", "Toggle Fullscreen:"},
+                // {"submit", "Submit"},
+                // {"cancel", "Cancel"},
+                // {"next", "Next"},
+                // {"previous", "Previous"},
             };
 
             public static LocalizedString listening = @"Listening";
@@ -922,6 +921,9 @@ namespace Intersect.Client.Localization
 
             public static LocalizedString lostconnection =
                 @"Lost connection to the game server. Please make sure you're connected to the internet and try again!";
+
+            public static LocalizedString HostNotFound =
+                @"DNS resolution error, please report this to the game administrator.";
 
         }
 
@@ -1737,7 +1739,7 @@ namespace Intersect.Client.Localization
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString AutoCloseWindows = @"Auto-close Windows";
-            
+
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString AutoToggleChatLog = @"Auto-toggle chat log visibility";
 
@@ -1839,7 +1841,7 @@ namespace Intersect.Client.Localization
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString TargetFps = @"Target FPS:";
-            
+
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString TargetingSettings = @"Targeting";
 

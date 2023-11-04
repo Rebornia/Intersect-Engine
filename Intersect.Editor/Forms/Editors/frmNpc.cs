@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 
 using Intersect.Editor.Content;
+using Intersect.Editor.Core;
 using Intersect.Editor.General;
 using Intersect.Editor.Localization;
 using Intersect.Editor.Networking;
@@ -15,6 +16,7 @@ using Intersect.Enums;
 using Intersect.GameObjects;
 using Intersect.GameObjects.Events;
 using Intersect.Utilities;
+using Graphics = System.Drawing.Graphics;
 
 namespace Intersect.Editor.Forms.Editors
 {
@@ -112,7 +114,7 @@ namespace Intersect.Editor.Forms.Editors
             cmbOnDeathEventParty.Items.Add(Strings.General.None);
             cmbOnDeathEventParty.Items.AddRange(EventBase.Names);
             cmbScalingStat.Items.Clear();
-            for (var x = 0; x < (int)Stat.StatCount; x++)
+            for (var x = 0; x < Enum.GetValues<Stat>().Length; x++)
             {
                 cmbScalingStat.Items.Add(Globals.GetStatName(x));
             }

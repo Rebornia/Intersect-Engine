@@ -6,9 +6,9 @@ using System.IO;
 
 using Intersect.Compression;
 using Intersect.Editor.Content;
-
+using Intersect.Editor.Core;
 using Newtonsoft.Json.Linq;
-
+using Graphics = System.Drawing.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace Intersect.Editor.Classes.ContentManagement

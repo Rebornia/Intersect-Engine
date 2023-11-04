@@ -1236,7 +1236,7 @@ namespace Intersect.Client.Entities
         public void AddToHotbar(int hotbarSlot, sbyte itemType, int itemSlot)
         {
             Hotbar[hotbarSlot].ItemOrSpellId = Guid.Empty;
-            Hotbar[hotbarSlot].PreferredStatBuffs = new int[(int)Enums.Stat.StatCount];
+            Hotbar[hotbarSlot].PreferredStatBuffs = new int[Enum.GetValues<Stat>().Length];
             if (itemType == 0)
             {
                 var item = Inventory[itemSlot];
@@ -2327,10 +2327,10 @@ namespace Intersect.Client.Entities
                 return;
             }
 
-            if (Maps.MapInstance.Get(Globals.Me.MapId) != null)
+            if (Maps.MapInstance.TryGet(Globals.Me.MapId, out var mapInstance))
             {
-                var gridX = Maps.MapInstance.Get(Globals.Me.MapId).GridX;
-                var gridY = Maps.MapInstance.Get(Globals.Me.MapId).GridY;
+                var gridX = mapInstance.GridX;
+                var gridY = mapInstance.GridY;
                 for (var x = gridX - 1; x <= gridX + 1; x++)
                 {
                     for (var y = gridY - 1; y <= gridY + 1; y++)

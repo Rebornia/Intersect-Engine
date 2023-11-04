@@ -6,12 +6,13 @@ using System.Windows.Forms;
 
 using DarkUI.Controls;
 using DarkUI.Forms;
-
+using Intersect.Editor.Core;
 using Intersect.Editor.General;
 using Intersect.Editor.Localization;
 using Intersect.Editor.Networking;
 using Intersect.Enums;
 using Intersect.GameObjects;
+using Graphics = System.Drawing.Graphics;
 
 namespace Intersect.Editor.Forms.Editors
 {
