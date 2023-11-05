@@ -1252,8 +1252,8 @@ namespace Intersect.Server.Entities
                         continue;
                     }
 
-                    if (grid.MyGrid[x, y] != Guid.Empty &&
-                        grid.MyGrid[x, y] == target.MapId)
+                    if (grid.MapIdGrid[x, y] != Guid.Empty &&
+                        grid.MapIdGrid[x, y] == target.MapId)
                     {
                         xDiff = (x - map.MapGridX) * Options.MapWidth + target.X - X;
                         yDiff = (y - map.MapGridY) * Options.MapHeight + target.Y - Y;
