@@ -805,7 +805,7 @@ namespace Intersect.Client.Maps
                         var rarity = itemBase.Rarity;
                         if (tileItems[index].Quantity > 1)
                         {
-                            name = Localization.Strings.General.MapItemStackable.ToString(name, Strings.FormatQuantityAbbreviated(quantity));
+                            name = Localization.Strings.General.MapItemStackable.ToString(name, Strings.FormatQuantityAbbreviated(quantity) + "x ");
                         }
                         var color = CustomColors.Items.MapRarities.ContainsKey(rarity)
                             ? CustomColors.Items.MapRarities[rarity]
