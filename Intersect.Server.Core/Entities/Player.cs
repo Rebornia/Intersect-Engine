@@ -472,10 +472,6 @@ namespace Intersect.Server.Entities
 
             PacketSender.SendEntityLeave(this);
 
-            if (!string.IsNullOrWhiteSpace(Strings.Player.left.ToString()))
-            {
-                PacketSender.SendGlobalMsg(Strings.Player.left.ToString(Name, Options.Instance.GameName));
-            }
 
             //Remvoe this player from the online list
             if (OnlinePlayers?.ContainsKey(Id) ?? false)
