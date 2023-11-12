@@ -135,7 +135,7 @@ namespace Intersect.Client.Entities
 
         public Color Color { get; set; } = new Color(255, 255, 255, 255);
 
-        public Direction MoveDir { get; set; } = Direction.None;
+        public virtual Direction MoveDir { get; set; } = Direction.None;
 
         public long MoveTimer { get; set; }
 
@@ -1001,67 +1001,71 @@ namespace Intersect.Client.Entities
             }
         }
 
-        public virtual HashSet<Entity> DetermineRenderOrder(HashSet<Entity> renderList, IMapInstance map)
+        public virtual HashSet<Entity>? DetermineRenderOrder(HashSet<Entity>? existingRenderSet, IMapInstance? map)
         {
-            if (renderList != null)
+            existingRenderSet?.Remove(this);
+
+            var playerMap = Globals.Me?.MapInstance;
+            if (map == default || playerMap == default)
             {
-                renderList.Remove(this);
+                return default;
             }
 
-            if (map == null || Globals.Me == null || Globals.Me.MapInstance == null)
-            {
-                return null;
-            }
-
-            var gridX = Globals.Me.MapInstance.GridX;
-            var gridY = Globals.Me.MapInstance.GridY;
+            var gridX = playerMap.GridX;
+            var gridY = playerMap.GridY;
             for (var x = gridX - 1; x <= gridX + 1; x++)
             {
                 for (var y = gridY - 1; y <= gridY + 1; y++)
                 {
-                    if (x >= 0 &&
-                        x < Globals.MapGridWidth &&
-                        y >= 0 &&
-                        y < Globals.MapGridHeight &&
-                        Globals.MapGrid[x, y] != Guid.Empty)
+                    if (x < 0 || x >= Globals.MapGridWidth || y < 0 || y >= Globals.MapGridHeight)
                     {
-                        if (Globals.MapGrid[x, y] == MapId)
-                        {
-                            var priority = mRenderPriority;
-                            if (Z != 0)
-                            {
-                                priority += 3;
-                            }
-
-                            HashSet<Entity> renderSet = default;
-                            int entY;
-
-                            if (y == gridY - 1)
-                            {
-                                entY = Options.MapHeight + Y;
-                            }
-                            else if (y == gridY)
-                            {
-                                entY = Options.MapHeight * 2 + Y;
-                            }
-                            else
-                            {
-                                entY = Options.MapHeight * 3 + Y;
-                            }
-
-                            if (priority < Graphics.RenderingEntities.GetLength(0) && entY < Graphics.RenderingEntities.GetLength(1))
-                            {
-                                renderSet = Graphics.RenderingEntities[priority, entY];
-                                renderSet.Add(this);
-                            }
-
-                            return renderSet;
-                        }
+                        continue;
                     }
+
+                    var mapIdOnGrid = Globals.MapGrid[x, y];
+                    if (mapIdOnGrid != MapId)
+                    {
+                        continue;
+                    }
+
+                    var priority = mRenderPriority;
+                    if (Z != 0)
+                    {
+                        priority += 3;
+                    }
+
+                    HashSet<Entity>? renderSet = default;
+                    int entityY;
+
+                    if (y == gridY - 1)
+                    {
+                        entityY = Options.MapHeight + Y;
+                    }
+                    else if (y == gridY)
+                    {
+                        entityY = Options.MapHeight * 2 + Y;
+                    }
+                    else
+                    {
+                        entityY = Options.MapHeight * 3 + Y;
+                    }
+
+                    entityY = (int)Math.Floor(entityY + OffsetY / Options.TileHeight);
+
+                    var renderingEntities = Graphics.RenderingEntities;
+                    if (priority >= renderingEntities.GetLength(0) || entityY >= renderingEntities.GetLength(1))
+                    {
+                        return renderSet;
+                    }
+
+                    renderSet = renderingEntities[priority, entityY];
+                    renderSet.Add(this);
+
+                    return renderSet;
                 }
             }
 
-            return renderList;
+            return existingRenderSet;
         }
 
         //Rendering Functions
@@ -2234,8 +2238,7 @@ namespace Intersect.Client.Entities
         /// </summary>
         /// <returns></returns>
         public int IsTileBlocked(
-            int x,
-            int y,
+            Point delta,
             int z,
             Guid mapId,
             ref IEntity blockedBy,
@@ -2255,31 +2258,31 @@ namespace Intersect.Client.Entities
             var gridY = mapInstance.GridY;
             try
             {
-                var tmpX = x;
-                var tmpY = y;
+                var tmpX = delta.X;
+                var tmpY = delta.Y;
                 var tmpMapId = Guid.Empty;
-                if (x < 0)
+                if (delta.X < 0)
                 {
                     gridX--;
-                    tmpX = Options.MapWidth - x * -1;
+                    tmpX = Options.MapWidth - delta.X * -1;
                 }
 
-                if (y < 0)
+                if (delta.Y < 0)
                 {
                     gridY--;
-                    tmpY = Options.MapHeight - y * -1;
+                    tmpY = Options.MapHeight - delta.Y * -1;
                 }
 
-                if (x > Options.MapWidth - 1)
+                if (delta.X > Options.MapWidth - 1)
                 {
                     gridX++;
-                    tmpX = x - Options.MapWidth;
+                    tmpX = delta.X - Options.MapWidth;
                 }
 
-                if (y > Options.MapHeight - 1)
+                if (delta.Y > Options.MapHeight - 1)
                 {
                     gridY++;
-                    tmpY = y - Options.MapHeight;
+                    tmpY = delta.Y - Options.MapHeight;
                 }
 
                 if (gridX < 0 || gridY < 0 || gridX >= Globals.MapGridWidth || gridY >= Globals.MapGridHeight)
