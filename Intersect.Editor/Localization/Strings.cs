@@ -1789,6 +1789,34 @@ Tick timer saved in server config.json.";
 
         }
 
+        public partial struct EventCastSpellOn
+        {
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString Cancel = @"Cancel";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString IncludeGuildies = @"Online Guild Members";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString IncludePartyMembers = @"Party Members";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString IncludeSelf = @"Self";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString LabelSpell = @"Spell";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString LabelTargets = @"Targets";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString Okay = @"Okay";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString Title = @"Cast Spell On";
+
+        }
+
         public partial struct EventChangeSprite
         {
 
@@ -1878,6 +1906,9 @@ Tick timer saved in server config.json.";
 
             public static LocalizedString animationrotatedir = @"Rotate Relative To Direction";
 
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString CastSpellOn = @"Cast Spell '{00}' [include self: {01}, include party: {02}; include guild: {03})";
+
             public static LocalizedString changename = @"Change Name to Variable: {00}";
 
             public static LocalizedString changeitems = @"Change Player Items [{00}]";
@@ -1897,6 +1928,9 @@ Tick timer saved in server config.json.";
             public static LocalizedString chatplayer = @"Player";
 
             public static LocalizedString commonevent = @"Start Common Event: {00}";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString CommonEventInstanced = @"Start Common Event For All on Instance: {00} (Allow in overworld: {01})";
 
             public static LocalizedString completetask = @"Complete Quest Task [Quest: {00}, Task: {01}]";
 
@@ -2051,6 +2085,9 @@ Tick timer saved in server config.json.";
             public static LocalizedString openshop = @"Open Shop [{00}]";
 
             public static LocalizedString playanimation = @"Play Animation {00} {01}";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString PlayAnimationInstanced = @" (Instanced: {00})";
 
             public static LocalizedString playbgm = @"Play BGM [File: {00}]";
 
@@ -2309,6 +2346,7 @@ Tick timer saved in server config.json.";
                 {"openguildbank", @"Open Guild Bank"},
                 {"setguildbankslots", @"Set Guild Bank Slots Count"},
                 {"resetstatallocations", @"Reset Stat Point Allocations"},
+                {"castspellon", @"Cast Spell On"},
             };
 
         }
@@ -3092,6 +3130,12 @@ Tick timer saved in server config.json.";
 
             public static LocalizedString entity = @"Entity:";
 
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString InstanceToPlayer = @"Instance to Player?";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString InstanceToPlayerTooltip = @"When enabled, only the player running this event will see the animation.";
+
             public static LocalizedString okay = @"Ok";
 
             public static LocalizedString player = @"Player";
@@ -3398,11 +3442,20 @@ Tick timer saved in server config.json.";
         public partial struct EventStartCommonEvent
         {
 
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString AllInInstance = "Run for all players in instance?";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString AllowInOverworld = "Even on Overworld?";
+
             public static LocalizedString cancel = @"Cancel";
 
             public static LocalizedString label = @"Common Event:";
 
             public static LocalizedString okay = @"Ok";
+
+            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+            public static LocalizedString OverworldOverrideTooltip = "WARNING: THIS WILL RUN FOR (ALMOST) ALL USERS, USE AT YOUR OWN RISK!";
 
             public static LocalizedString title = @"Start Common Event";
 

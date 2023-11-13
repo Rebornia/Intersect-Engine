@@ -101,7 +101,7 @@ namespace Intersect.Server.Database
             ExplicitLoad = explicitLoad,
             LazyLoading = lazyLoading,
 #if DEBUG
-            LoggerFactory = new IntersectLoggerFactory(),
+            LoggerFactory = new IntersectLoggerFactory(nameof(GameContext)),
 #endif
             QueryTrackingBehavior = queryTrackingBehavior,
             ReadOnly = readOnly,
@@ -129,7 +129,7 @@ namespace Intersect.Server.Database
             ExplicitLoad = explicitLoad,
             LazyLoading = lazyLoading,
 #if DEBUG
-            LoggerFactory = new IntersectLoggerFactory(),
+            LoggerFactory = new IntersectLoggerFactory(nameof(PlayerContext)),
 #endif
             QueryTrackingBehavior = queryTrackingBehavior,
             ReadOnly = readOnly,
@@ -152,7 +152,7 @@ namespace Intersect.Server.Database
             ExplicitLoad = explicitLoad,
             LazyLoading = lazyLoading,
 #if DEBUG
-            LoggerFactory = new IntersectLoggerFactory(),
+            LoggerFactory = new IntersectLoggerFactory(nameof(LoggingContext)),
 #endif
             QueryTrackingBehavior = queryTrackingBehavior,
             ReadOnly = readOnly,
@@ -284,7 +284,7 @@ namespace Intersect.Server.Database
                 DatabaseType = Options.Instance.GameDatabase.Type,
                 EnableDetailedErrors = true,
                 EnableSensitiveDataLogging = true,
-                LoggerFactory = new IntersectLoggerFactory(),
+                LoggerFactory = new IntersectLoggerFactory(nameof(GameContext)),
             });
 
             Log.Verbose("Creating player context...");
@@ -297,7 +297,7 @@ namespace Intersect.Server.Database
                 DatabaseType = Options.Instance.PlayerDatabase.Type,
                 EnableDetailedErrors = true,
                 EnableSensitiveDataLogging = true,
-                LoggerFactory = new IntersectLoggerFactory(),
+                LoggerFactory = new IntersectLoggerFactory(nameof(PlayerContext)),
             });
 
             Log.Verbose("Creating logging context...");
@@ -310,7 +310,7 @@ namespace Intersect.Server.Database
                 DatabaseType = Options.Instance.LoggingDatabase.Type,
                 EnableDetailedErrors = true,
                 EnableSensitiveDataLogging = true,
-                LoggerFactory = new IntersectLoggerFactory(),
+                LoggerFactory = new IntersectLoggerFactory(nameof(LoggingContext)),
             });
 
             // We don't want anyone running the old migration tool accidentally
@@ -524,14 +524,7 @@ namespace Intersect.Server.Database
                 try
                 {
                     using var playerContext = CreatePlayerContext(readOnly: true, explicitLoad: false);
-                    var playerEntry = playerContext.Players.Attach(player);
-                    playerEntry.Collection(p => p.Items).Query().Load();
-                    playerEntry.Collection(player => player.Bank).Load();
-                    playerEntry.Collection(player => player.Hotbar).Load();
-                    playerEntry.Collection(player => player.Items).Load();
-                    playerEntry.Collection(player => player.Quests).Load();
-                    playerEntry.Collection(player => player.Spells).Load();
-                    playerEntry.Collection(player => player.Variables).Load();
+                    player.LoadRelationships(playerContext);
                     _ = Player.Validate(player);
                 }
                 catch (Exception exception)

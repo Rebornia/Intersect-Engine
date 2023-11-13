@@ -284,6 +284,10 @@ namespace Intersect.GameObjects.Events.Commands
     {
         public override EventCommandType Type { get; } = EventCommandType.StartCommonEvent;
 
+        public bool AllInInstance { get; set;  }
+
+        public bool AllowInOverworld { get; set; }
+
         public Guid EventId { get; set; }
     }
 
@@ -616,6 +620,8 @@ namespace Intersect.GameObjects.Events.Commands
         public sbyte X { get; set; }
 
         public sbyte Y { get; set; }
+
+        public bool InstanceToPlayer { get; set; }
     }
 
     public partial class HoldPlayerCommand : EventCommand
@@ -990,5 +996,18 @@ namespace Intersect.GameObjects.Events.Commands
     public partial class ResetStatPointAllocationsCommand : EventCommand
     {
         public override EventCommandType Type { get; } = EventCommandType.ResetStatPointAllocations;
+    }
+
+    public partial class CastSpellOn : EventCommand
+    {
+        public override EventCommandType Type { get; } = EventCommandType.CastSpellOn;
+
+        public Guid SpellId { get; set; }
+
+        public bool Self { get; set; }
+
+        public bool PartyMembers { get; set; }
+
+        public bool GuildMembers { get; set; }
     }
 }

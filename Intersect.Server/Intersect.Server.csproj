@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Configuration) != 'Debug'">
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
   </PropertyGroup>
@@ -19,10 +20,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <FileAlignment>512</FileAlignment>
     <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration.ToLower())' == 'nofody'">
-    <DisableFody>true</DisableFody>
   </PropertyGroup>
 
   <ItemGroup>
