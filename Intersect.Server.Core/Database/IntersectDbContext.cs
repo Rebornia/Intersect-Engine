@@ -6,6 +6,8 @@ using Intersect.Config;
 using Intersect.Logging;
 using Intersect.Reflection;
 using Intersect.Server.Core;
+using Intersect.Server.Database.PlayerData.Players;
+using Intersect.Server.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -208,11 +210,30 @@ public abstract partial class IntersectDbContext<TDbContext> : DbContext, IDbCon
         catch (DbUpdateConcurrencyException concurrencyException)
         {
             var concurrencyErrors = new StringBuilder();
+            var userIds = concurrencyException.Entries.Select(entry => GetUserIdFrom(entry.Entity))
+                .Where(id => id != default)
+                .Distinct()
+                .ToArray();
+            if (userIds.Length == 1)
+            {
+                concurrencyErrors.AppendLine($"This failure was wholly caused by user {userIds.First()}");
+            }
+            else
+            {
+                concurrencyErrors.AppendLine($"Involved users: {string.Join(", ", userIds)}");
+            }
+
             foreach (var entry in concurrencyException.Entries)
             {
                 concurrencyErrors.AppendLine(
                     $"[{entry.State}] {entry.Entity.GetFullishName()} ({entry.GetFullishName()})"
                 );
+
+                var userId = GetUserIdFrom(entry.Entity);
+                if (userId != default)
+                {
+                    concurrencyErrors.AppendLine($"User Id {userId}");
+                }
 
                 var proposedValues = entry.CurrentValues;
                 var databaseValues = entry.GetDatabaseValues();
@@ -242,9 +263,11 @@ public abstract partial class IntersectDbContext<TDbContext> : DbContext, IDbCon
                 .Select(entry => entry.Entity.GetType().Name)
                 .Distinct()
                 .ToArray();
+
+            concurrencyErrors.AppendLine(Environment.StackTrace);
+
             Log.Error(concurrencyException, $"Jackpot! Concurrency Bug For {string.Join(", ", entityTypeNames)} {suffix}");
             Log.Error(concurrencyErrors.ToString());
-            Log.Error(Environment.StackTrace);
 
 #if DEBUG
             Log.Debug($"DBOP-C SaveChanges({acceptAllChangesOnSuccess}) #{currentExecutionId}");
@@ -255,6 +278,16 @@ public abstract partial class IntersectDbContext<TDbContext> : DbContext, IDbCon
             );
 
             return -1;
+
+            static Guid GetUserIdFrom(object entry)
+            {
+                return entry switch
+                {
+                    IPlayerOwned playerOwned => playerOwned.Player?.User?.Id ?? playerOwned.Player?.UserId ?? default,
+                    Player player => player.User?.Id ?? player.UserId,
+                    _ => default,
+                };
+            }
         }
     }
 
