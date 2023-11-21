@@ -1487,20 +1487,6 @@ namespace Intersect.Server.Entities
                 return;
             }
 
-            //Check for taunt status and trying to attack a target that has not taunted you.
-            foreach (var status in CachedStatuses)
-            {
-                if (status.Type == SpellEffect.Taunt)
-                {
-                    if (Target != target)
-                    {
-                        PacketSender.SendActionMsg(this, Strings.Combat.miss, CustomColors.Combat.Missed);
-
-                        return;
-                    }
-                }
-            }
-
             if (parentSpell != null)
             {
                 TryAttack(target, parentSpell);
@@ -1590,23 +1576,6 @@ namespace Intersect.Server.Entities
             if (spellBase == null)
             {
                 return;
-            }
-
-            //Check for taunt status and trying to attack a target that has not taunted you.
-            if (!trapTrigger) //Traps ignore taunts.
-            {
-                foreach (var status in CachedStatuses)
-                {
-                    if (status.Type == SpellEffect.Taunt)
-                    {
-                        if (Target != target)
-                        {
-                            PacketSender.SendActionMsg(this, Strings.Combat.miss, CustomColors.Combat.Missed);
-
-                            return;
-                        }
-                    }
-                }
             }
 
             var deadAnimations = new List<KeyValuePair<Guid, Direction>>();

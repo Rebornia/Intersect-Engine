@@ -852,8 +852,6 @@ namespace Intersect.Client.Localization
 
             public static LocalizedString NameAndLevel = @"{00}    {01}";
 
-            public static LocalizedString cooldown = "{00}s";
-
             public static LocalizedString exp = @"EXP:";
 
             public static LocalizedString expval = @"{00} / {01}";
@@ -1176,9 +1174,6 @@ namespace Intersect.Client.Localization
         public partial struct Inventory
         {
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-            public static LocalizedString Cooldown = "{00}s";
-
-            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString DropItemTitle = @"Drop Item";
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -1303,9 +1298,6 @@ namespace Intersect.Client.Localization
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString AttackSpeed = @"Attack Speed:";
-
-            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-            public static LocalizedString Seconds = @"{00}s";
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString Percentage = @"{00}%";
@@ -2088,9 +2080,6 @@ namespace Intersect.Client.Localization
             public static LocalizedString Instant = @"Instant";
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-            public static LocalizedString Seconds = @"{00}s";
-
-            [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
             public static LocalizedString Percentage = @"{00}%";
 
             [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -2278,8 +2267,6 @@ namespace Intersect.Client.Localization
 
         public partial struct Spells
         {
-
-            public static LocalizedString cooldown = "{00}s";
 
             public static LocalizedString forgetspell = @"Forget Spell";
 
