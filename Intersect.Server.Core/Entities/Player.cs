@@ -887,6 +887,26 @@ namespace Intersect.Server.Entities
             }
         }
 
+        /// <summary>
+        ///     Updates the player's spell cooldown for the specified <paramref name="spellBase"/>.
+        ///     <para> This method is called when a spell is casted by a player. </para>
+        /// </summary>
+        public override void UpdateSpellCooldown(SpellBase spellBase, int spellSlot)
+        {
+            if (spellSlot < 0 || spellSlot >= Options.MaxPlayerSkills)
+            {
+                return;
+            }
+
+            this.UpdateCooldown(spellBase);
+
+            // Trigger the global cooldown, if we're allowed to.
+            if (!spellBase.IgnoreGlobalCooldown)
+            {
+                this.UpdateGlobalCooldown();
+            }
+        }
+        
         public void RemoveEvent(Guid id, bool sendLeave = true)
         {
             Event outInstance;
@@ -3925,7 +3945,7 @@ namespace Intersect.Server.Entities
         }
 
         //Crafting
-        public bool OpenCraftingTable(CraftingTableBase table)
+        public bool OpenCraftingTable(CraftingTableBase table, bool journalMode)
         {
             if (IsBusy())
             {
@@ -3935,7 +3955,8 @@ namespace Intersect.Server.Entities
             if (table != null)
             {
                 OpenCraftingTableId = table.Id;
-                PacketSender.SendOpenCraftingTable(this, table);
+                CraftJournalMode = journalMode;
+                PacketSender.SendOpenCraftingTable(this, table, journalMode);
             }
 
             return true;
@@ -5433,7 +5454,6 @@ namespace Intersect.Server.Entities
                 target = this;
             }
 
-
             if (CastTime == 0)
             {
                 CastTime = Timing.Global.Milliseconds + spell.CastDuration;
@@ -5453,18 +5473,6 @@ namespace Intersect.Server.Entities
                 // retargeting for auto self-cast on friendly when targeting hostile
                 CastTarget = target;
 
-                //Check if the caster has the right ammunition if a projectile
-                if (spell.SpellType == SpellType.CombatSpell &&
-                    spell.Combat.TargetType == SpellTargetType.Projectile &&
-                    spell.Combat.ProjectileId != Guid.Empty)
-                {
-                    var projectileBase = spell.Combat.Projectile;
-                    if (projectileBase != null && projectileBase.AmmoItemId != Guid.Empty)
-                    {
-                        TryTakeItem(projectileBase.AmmoItemId, projectileBase.AmmoRequired);
-                    }
-                }
-
                 if (spell.CastAnimationId != Guid.Empty)
                 {
                     PacketSender.SendAnimationToProximity(
@@ -5472,17 +5480,9 @@ namespace Intersect.Server.Entities
                     ); //Target Type 1 will be global entity
                 }
 
-                // Check if the player isn't casting a spell already.
-                if (!IsCasting)
+                //Tell the client we are channeling the spell
+                if (IsCasting)
                 {
-                    // Player is not casting a spell, cast now!
-                    CastTime = 0;
-                    CastSpell(Spells[SpellCastSlot].SpellId, SpellCastSlot);
-                    CastTarget = null;
-                }
-                else
-                {
-                    //Tell the client we are channeling the spell
                     PacketSender.SendEntityCastTime(this, spellNum);
                 }
             }
@@ -5520,9 +5520,31 @@ namespace Intersect.Server.Entities
 
                     break;
             }
-            if (spellBase.CastDuration >= 10)
+
+            UpdateSpellCooldown(spellBase, spellSlot);
+
+            ConsumeSpellProjectile(spellBase);
+        }
+
+        /// <summary>
+        /// Checks if the caster has the required projectile(s) for the spell and tries to take them.
+        /// This method is used when a spell that requires projectile is casted.
+        /// If the spell has a valid ProjectileId, it retrieves the projectile and checks if it has a valid AmmoItemId.
+        /// If it does, it attempts to take the required amount of ammo from the player's inventory.
+        /// </summary>
+        /// <param name="spellBase">The spell that is being cast.</param>
+        private void ConsumeSpellProjectile(SpellBase spellBase)
+        {
+            // Check if the caster has the required projectile(s) for the spell and try to take it/them.
+            if (spellBase.SpellType == SpellType.CombatSpell &&
+                spellBase.Combat.TargetType == SpellTargetType.Projectile &&
+                spellBase.Combat.ProjectileId != Guid.Empty)
             {
-                PacketSender.SendActionMsg(this, spellBase.Name.ToString() + " !", CustomColors.Combat.MagicDamage);
+                var projectileBase = spellBase.Combat.Projectile;
+                if (projectileBase != null && projectileBase.AmmoItemId != Guid.Empty)
+                {
+                    TryTakeItem(projectileBase.AmmoItemId, projectileBase.AmmoRequired);
+                }
             }
         }
 
@@ -5599,7 +5621,7 @@ namespace Intersect.Server.Entities
         }
 
         //Equipment
-        public void EquipItem(ItemBase itemBase, int slot = -1)
+        public void EquipItem(ItemBase itemBase, int slot = -1, bool updateCooldown = false)
         {
             if (itemBase == null || itemBase.ItemType != ItemType.Equipment)
             {
@@ -5637,7 +5659,13 @@ namespace Intersect.Server.Entities
                         UnequipItem(Options.WeaponIndex, false);
                     }
                 }
+
                 SetEquipmentSlot(itemBase.EquipmentSlot, slot);
+
+                if (updateCooldown)
+                {
+                    UpdateCooldown(itemBase);
+                }
             }
 
             ProcessEquipmentUpdated(true);
@@ -7390,6 +7418,8 @@ namespace Intersect.Server.Entities
         [NotMapped, JsonIgnore] public CraftingState CraftingState { get; set; }
 
         [NotMapped, JsonIgnore] public Guid OpenCraftingTableId { get; set; }
+        
+        [NotMapped, JsonIgnore] public bool CraftJournalMode { get; set; }
 
         #endregion
 
