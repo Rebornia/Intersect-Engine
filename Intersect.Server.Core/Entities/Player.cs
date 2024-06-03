@@ -1245,7 +1245,7 @@ namespace Intersect.Server.Entities
             }
             if (amount > 0)
             {
-                PacketSender.SendChatMsg(this, Exp + " XP adquiridos!", ChatMessageType.Notice, CustomColors.Alerts.Success);
+                PacketSender.SendChatMsg(this, amount + " XP adquiridos!", ChatMessageType.Notice, CustomColors.Alerts.Success);
             }
             
 
