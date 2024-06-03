@@ -1780,6 +1780,28 @@ namespace Intersect.Client.Entities
                 y -= sprite.Height / Options.Instance.Sprites.Directions;
                 y -= boundingTeture.Height + 2;
             }
+            var hpcolor = Color.Green;
+
+            if ((float)Vital[(int)Enums.Vital.Health] < maxVital * 1 && (float)Vital[(int)Enums.Vital.Health] > maxVital * 0.8)
+            {
+                hpcolor = Color.ForestGreen;
+            }
+            if ((float)Vital[(int)Enums.Vital.Health] < maxVital * 0.8 && (float)Vital[(int)Enums.Vital.Health] > maxVital * 0.6)
+            {
+                hpcolor = Color.Yellow;
+            }
+            if ((float)Vital[(int)Enums.Vital.Health] < maxVital * 0.6 && (float)Vital[(int)Enums.Vital.Health] > maxVital * 0.4)
+            {
+                hpcolor = Color.Orange;
+            }
+            if ((float)Vital[(int)Enums.Vital.Health] < maxVital * 0.4 && (float)Vital[(int)Enums.Vital.Health] > maxVital * 0.2)
+            {
+                hpcolor = Color.OrangeRed;
+            }
+            if ((float)Vital[(int)Enums.Vital.Health] < maxVital * 0.2 && (float)Vital[(int)Enums.Vital.Health] > 0)
+            {
+                hpcolor = Color.Red;
+            }
 
             y += boundingTeture.Height / 2;
 
@@ -1796,7 +1818,7 @@ namespace Intersect.Client.Entities
                 Graphics.DrawGameTexture(
                     hpForeground,
                     new FloatRect(0, 0, hpFillWidth, hpForeground.Height),
-                    new FloatRect(x - foregroundBoundingTexture.Width / 2, y - hpForeground.Height / 2, hpFillWidth, hpForeground.Height), Color.White
+                    new FloatRect(x - foregroundBoundingTexture.Width / 2, y - hpForeground.Height / 2, hpFillWidth, hpForeground.Height), hpcolor
                 );
             }
 
