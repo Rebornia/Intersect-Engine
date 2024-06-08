@@ -2876,6 +2876,8 @@ Tick timer saved in server config.json.";
 
             public static LocalizedString pageoptions = @"Page Options";
 
+            public static LocalizedString ParallelRun = @"Can run in Parallel?";
+
             public static LocalizedString passable = @"Passable";
 
             public static LocalizedString pastecommand = @"Paste";
@@ -4707,6 +4709,12 @@ Tick timer saved in server config.json.";
 
             public static LocalizedString autorotate = @"Auto Rotate Animation?";
 
+            public static LocalizedString BehaviorDefault = @"Default";
+
+            public static LocalizedString BehaviorDirectShot = @"Direct Shot Behavior";
+
+            public static LocalizedString BehaviorHoming = @"Homing Behavior";
+
             public static LocalizedString cancel = @"Cancel";
 
             public static LocalizedString collisions = @"Ignore Collision:";
@@ -4782,6 +4790,8 @@ Tick timer saved in server config.json.";
             public static LocalizedString speed = @"Speed (ms):";
 
             public static LocalizedString spell = @"Collision Spell:";
+
+            public static LocalizedString TargettingOptions = @"Targetting Options";
 
             public static LocalizedString title = @"Projectile Editor";
 

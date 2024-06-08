@@ -2778,6 +2778,8 @@ namespace Intersect.Server.Networking
                     /// ???
                     break;
             }
+
+            player.UnequipInvalidItems();
         }
 
         //GuildInviteAcceptPacket
@@ -2901,6 +2903,7 @@ namespace Intersect.Server.Networking
 
             // Send the newly updated player information to their surroundings.
             PacketSender.SendEntityDataToProximity(player);
+            player.UnequipInvalidItems();
 
         }
 
@@ -2924,6 +2927,30 @@ namespace Intersect.Server.Networking
                 return;
             }
             player.IsFading = false;
+        }
+
+        public void HandlePacket(Client client, TargetPacket packet)
+        {
+            var player = client?.Entity;
+            if (player == null)
+            {
+                return;
+            }
+
+            if (packet.TargetId == Guid.Empty)
+            {
+                player.Target = default;
+                return;
+            }
+
+            if (player.Map.TryGetInstance(player.MapInstanceId, out var instance))
+            {
+                var entity = instance.GetEntities(true).Find(e => e.Id == packet.TargetId);
+                if (entity != null)
+                {
+                    player.Target = entity;
+                }
+            }
         }
 
         #endregion

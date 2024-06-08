@@ -310,6 +310,11 @@ namespace Intersect.Client.Entities
                 Interface.Interface.GameUi.HideGuildWindow();
             }
 
+            if (IsBlocking && !IsAttacking && !IsMoving)
+            {
+                IsBlocking = false;
+            }
+
             var returnval = base.Update();
 
             return returnval;
@@ -1632,6 +1637,7 @@ namespace Intersect.Client.Entities
             {
                 TargetBox?.SetEntity(null);
                 TargetBox?.Hide();
+                PacketSender.SendTarget(Guid.Empty);
                 return;
             }
 
@@ -1649,6 +1655,7 @@ namespace Intersect.Client.Entities
             }
 
             TargetBox?.Show();
+            PacketSender.SendTarget(en.Id);
         }
 
         private void AutoTurnToTarget(Entity en)
