@@ -2214,7 +2214,7 @@ namespace Intersect.Client.Entities
         /// </summary>
         /// <param name="en">entity's target</param>
         /// <returns>direction to player's selected target</returns>
-        protected Direction DirectionToTarget(Entity en)
+        public Direction DirectionToTarget(Entity en)
         {
             if (en == null)
             {
