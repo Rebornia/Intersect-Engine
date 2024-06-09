@@ -44,8 +44,6 @@ namespace Intersect.Client.Entities.Projectiles
 
         public int mLastTargetY = -1;
 
-        public Guid mLastTargetMapId = Guid.Empty;
-
         /// <summary>
         ///     The constructor for the inherated projectile class
         /// </summary>
@@ -316,11 +314,10 @@ namespace Intersect.Client.Entities.Projectiles
                                 var target = Globals.Entities[TargetId];
                                 mLastTargetX = target.X;
                                 mLastTargetY = target.Y;
-                                mLastTargetMapId = target.MapId;
 
-                                Spawns[s].OffsetX = GetProjectileLerping(Spawns[s], true);
-                                Spawns[s].OffsetY = GetProjectileLerping(Spawns[s], false);
-                                SetProjectileRotation(Spawns[s]);
+                                Spawns[s].OffsetX = GetProjectileX(Spawns[s], target.X, target.Y - Spawns[s].SpawnY);
+                                Spawns[s].OffsetY = GetProjectileY(Spawns[s], target.Y, target.X - Spawns[s].SpawnX);
+                                SetProjectileRotation(Spawns[s], target.X, target.Y);
 
                                 if (mMyBase.DirectShotBehavior)
                                 {
@@ -329,9 +326,9 @@ namespace Intersect.Client.Entities.Projectiles
                             }
                             else if(mLastTargetX != -1 && mLastTargetY != -1)
                             {
-                                Spawns[s].OffsetX = GetProjectileLerping(Spawns[s], true);
-                                Spawns[s].OffsetY = GetProjectileLerping(Spawns[s], false);
-                                SetProjectileRotation(Spawns[s]);
+                                Spawns[s].OffsetX = GetProjectileX(Spawns[s], mLastTargetX, mLastTargetY - Spawns[s].SpawnY);
+                                Spawns[s].OffsetY = GetProjectileY(Spawns[s], mLastTargetY, mLastTargetX - Spawns[s].SpawnX);
+                                SetProjectileRotation(Spawns[s], mLastTargetX, mLastTargetY);
                             }
                             else
                             {
@@ -365,113 +362,32 @@ namespace Intersect.Client.Entities.Projectiles
             return true;
         }
 
-        private float GetProjectileX(ProjectileSpawns spawn)
+        private float GetProjectileX(ProjectileSpawns spawn, int targetX, float directionY)
         {
-            if (mLastTargetMapId != Guid.Empty && mLastTargetMapId != spawn.SpawnMapId)
-            {
-                var map = Maps.MapInstance.Get(spawn.SpawnMapId);
-                for (var y = map.GridY - 1; y <= map.GridY + 1; y++)
-                {
-                    if (y < 0 || y >= Options.MapHeight)
-                    {
-                        continue;
-                    }
-
-                    for (var x = map.GridX - 1; x <= map.GridX + 1; x++)
-                    {
-                        if (x < 0 || x >= Options.MapWidth)
-                        {
-                            continue;
-                        }
-
-                        if (Globals.MapGrid[x, y] != Guid.Empty && Globals.MapGrid[x, y] == mLastTargetMapId)
-                        {
-                            var leftSide = x == map.GridX - 1;
-                            var rightSide = x == map.GridX + 1;
-
-                            if (leftSide)
-                            {
-                                return mLastTargetX - Options.MapWidth - spawn.SpawnX;
-                            }
-
-                            if (rightSide)
-                            {
-                                return mLastTargetX + Options.MapWidth - spawn.SpawnX;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return mLastTargetX - spawn.SpawnX;
-        }
-
-        private float GetProjectileY(ProjectileSpawns spawn)
-        {
-            if (mLastTargetMapId != Guid.Empty && mLastTargetMapId != spawn.SpawnMapId)
-            {
-                var map = Maps.MapInstance.Get(spawn.SpawnMapId);
-                for (var y = map.GridY - 1; y <= map.GridY + 1; y++)
-                {
-                    if (y < 0 || y >= Options.MapHeight)
-                    {
-                        continue;
-                    }
-
-                    for (var x = map.GridX - 1; x <= map.GridX + 1; x++)
-                    {
-                        if (x < 0 || x >= Options.MapWidth)
-                        {
-                            continue;
-                        }
-
-                        if(x >= Globals.MapGrid.GetLength(0) || y >= Globals.MapGrid.GetLength(1))
-                        {
-                            continue;
-                        }
-
-                        if (Globals.MapGrid[x, y] != Guid.Empty && Globals.MapGrid[x, y] == mLastTargetMapId)
-                        {
-                            var upSide = y == map.GridY + 1;
-                            var downSide = y == map.GridY - 1;
-
-                            if (upSide)
-                            {
-                                return mLastTargetY + Options.MapHeight - spawn.SpawnY;
-                            }
-
-                            if (downSide)
-                            {
-                                return mLastTargetY - Options.MapHeight - spawn.SpawnY;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return mLastTargetY - spawn.SpawnY;
-        }
-
-        private float GetProjectileLerping(ProjectileSpawns spawn, bool isXAxis)
-        {
-            var directionX = GetProjectileX(spawn);
-            var directionY = GetProjectileY(spawn);
-            var valueToLerp = isXAxis ? directionX : directionY;
-
+            float directionX = targetX - spawn.SpawnX;
             var length = (float)Math.Sqrt(directionX * directionX + directionY * directionY);
-            valueToLerp /= length;
+            directionX /= length;
 
+            var desiredX = GetDisplacement(spawn.SpawnTime) * directionX;
             var lerpFactor = 0.1f;
-            var offset = isXAxis ? spawn.OffsetX : spawn.OffsetY;
-            var desiredValue = GetDisplacement(spawn.SpawnTime) * valueToLerp;
-
-            return offset + (desiredValue - offset) * lerpFactor;
+            return spawn.OffsetX + (desiredX - spawn.OffsetX) * lerpFactor;
         }
 
-        private void SetProjectileRotation(ProjectileSpawns spawn)
+        private float GetProjectileY(ProjectileSpawns spawn, int targetY, float directionX)
         {
-            var directionX = GetProjectileX(spawn);
-            var directionY = GetProjectileY(spawn);
+            float directionY = targetY - spawn.SpawnY;
+            var length = (float)Math.Sqrt(directionX * directionX + directionY * directionY);
+            directionY /= length;
+
+            var desiredY = GetDisplacement(spawn.SpawnTime) * directionY;
+            var lerpFactor = 0.1f;
+            return spawn.OffsetY + (desiredY - spawn.OffsetY) * lerpFactor;
+        }
+
+        private void SetProjectileRotation(ProjectileSpawns spawn, int targetX, int targetY)
+        {
+            var directionX = targetX - spawn.SpawnX;
+            var directionY = targetY - spawn.SpawnY;
             var angle = (float)(Math.Atan2(directionY, directionX) * (180.0 / Math.PI) + 90);
             spawn.Anim.SetRotation(angle);
         }

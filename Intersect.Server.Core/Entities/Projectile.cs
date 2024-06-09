@@ -2,7 +2,6 @@ using Intersect.Enums;
 using Intersect.GameObjects;
 using Intersect.GameObjects.Maps;
 using Intersect.Network.Packets.Server;
-using Intersect.Server.Database;
 using Intersect.Server.Entities.Combat;
 using Intersect.Server.Maps;
 using Intersect.Utilities;
@@ -42,8 +41,6 @@ namespace Intersect.Server.Entities
         private int mLastTargetX = -1;
 
         private int mLastTargetY = -1;
-
-        private Guid mLastTargetMapId = Guid.Empty;
 
         public Projectile(
             Entity owner,
@@ -363,92 +360,18 @@ namespace Intersect.Server.Entities
             return killSpawn;
         }
 
-        private float GetProjectileX(ProjectileSpawn spawn)
+        private float GetProjectileX(ProjectileSpawn spawn, int targetX, float directionY)
         {
-            if (mLastTargetMapId != Guid.Empty && mLastTargetMapId != spawn.MapId)
-            {
-                var map = MapController.Get(spawn.MapId);
-                var grid = DbInterface.GetGrid(map.MapGrid);
-
-                //loop through surrounding maps
-                for (var y = map.MapGridY - 1; y <= map.MapGridY + 1; y++)
-                {
-                    if (y == -1 || y >= grid.Height)
-                    {
-                        continue;
-                    }
-
-                    for (var x = map.MapGridY - 1; x <= map.MapGridX + 1; x++)
-                    {
-                        if (x == -1 || x >= grid.Width)
-                        {
-                            continue;
-                        }
-
-                        if (grid.MapIdGrid[x, y] != Guid.Empty && grid.MapIdGrid[x, y] == mLastTargetMapId)
-                        {
-                            var leftSide = x == map.MapGridX - 1;
-                            var rightSide = x == map.MapGridX + 1;
-
-                            if (leftSide)
-                            {
-                                return mLastTargetX - Options.MapWidth - spawn.X;
-                            }
-
-                            if (rightSide)
-                            {
-                                return mLastTargetX + Options.MapWidth - spawn.X;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return mLastTargetX - spawn.X;
+            var directionX = targetX - spawn.X;
+            var length = Math.Sqrt(directionX * directionX + directionY * directionY);
+            return directionX / (float)length;
         }
 
-        private float GetProjectileY(ProjectileSpawn spawn)
+        private float GetProjectileY(ProjectileSpawn spawn, int targetY, float directionX)
         {
-            if (mLastTargetMapId != Guid.Empty && mLastTargetMapId != spawn.MapId)
-            {
-                var map = MapController.Get(spawn.MapId);
-                var grid = DbInterface.GetGrid(map.MapGrid);
-
-                //loop through surrounding maps
-                for (var y = map.MapGridY - 1; y <= map.MapGridY + 1; y++)
-                {
-                    if (y == -1 || y >= grid.Height)
-                    {
-                        continue;
-                    }
-
-                    for (var x = map.MapGridY - 1; x <= map.MapGridX + 1; x++)
-                    {
-                        if (x == -1 || x >= grid.Width)
-                        {
-                            continue;
-                        }
-
-                        if (grid.MapIdGrid[x, y] != Guid.Empty && grid.MapIdGrid[x, y] == mLastTargetMapId)
-                        {
-                            var topSide = y == map.MapGridY - 1;
-                            var bottomSide = y == map.MapGridY + 1;
-
-                            if (topSide)
-                            {
-                                return mLastTargetY - Options.MapHeight - spawn.Y;
-                            }
-
-                            if (bottomSide)
-                            {
-                                return mLastTargetY + Options.MapHeight - spawn.Y;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return mLastTargetY - spawn.Y;
+            var directionY = targetY - spawn.Y;
+            var length = Math.Sqrt(directionX * directionX + directionY * directionY);
+            return directionY / (float)length;
         }
 
         public bool MoveFragment(ProjectileSpawn spawn, bool move = true)
@@ -467,13 +390,8 @@ namespace Intersect.Server.Entities
                     //homing logic
                     mLastTargetX = Target.X;
                     mLastTargetY = Target.Y;
-                    mLastTargetMapId = Target.MapId;
-                    var directionX = GetProjectileX(spawn);
-                    var directionY = GetProjectileY(spawn);
-                    var length = Math.Sqrt(directionX * directionX + directionY * directionY);
-
-                    newx += (float)(directionX / length);
-                    newy += (float)(directionY / length);
+                    newx += GetProjectileX(spawn, Target.X, Target.Y - spawn.Y);
+                    newy += GetProjectileY(spawn, Target.Y, Target.X - spawn.X);
 
                     if (Base.DirectShotBehavior)
                     {
@@ -483,12 +401,8 @@ namespace Intersect.Server.Entities
                 else if (mLastTargetX != -1 && mLastTargetY != -1)
                 {
                     //last target location logic
-                    var directionX = GetProjectileX(spawn);
-                    var directionY = GetProjectileY(spawn);
-                    var length = Math.Sqrt(directionX * directionX + directionY * directionY);
-
-                    newx += (float)(directionX / length);
-                    newy += (float)(directionY / length);
+                    newx += GetProjectileX(spawn, mLastTargetX, mLastTargetY - spawn.Y);
+                    newy += GetProjectileY(spawn, mLastTargetY, mLastTargetX - spawn.X);
                 }
                 else
                 {
