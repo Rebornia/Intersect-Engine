@@ -37,7 +37,6 @@ namespace Intersect.Editor.Forms.Editors
             txtSearch = new DarkTextBox();
             lstGameObjects = new Controls.GameObjectList();
             grpGeneral = new DarkGroupBox();
-
             lblAlpha = new Label();
             lblBlue = new Label();
             lblGreen = new Label();
@@ -135,7 +134,8 @@ namespace Intersect.Editor.Forms.Editors
             lblManaRegen = new Label();
             lblRegenHint = new Label();
             grpDrops = new DarkGroupBox();
-
+            nudDropMinAmount = new DarkNumericUpDown();
+            lblDropMinAmount = new Label();
             chkIndividualLoot = new DarkCheckBox();
             btnDropRemove = new DarkButton();
             btnDropAdd = new DarkButton();
@@ -213,7 +213,7 @@ namespace Intersect.Editor.Forms.Editors
             ((System.ComponentModel.ISupportInitialize)nudMpRegen).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudHpRegen).BeginInit();
             grpDrops.SuspendLayout();
-
+            ((System.ComponentModel.ISupportInitialize)nudDropMinAmount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudDropAmount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudDropChance).BeginInit();
             grpNpcVsNpc.SuspendLayout();
@@ -285,7 +285,6 @@ namespace Intersect.Editor.Forms.Editors
             // 
             grpGeneral.BackColor = System.Drawing.Color.FromArgb(45, 45, 48);
             grpGeneral.BorderColor = System.Drawing.Color.FromArgb(90, 90, 90);
-
             grpGeneral.Controls.Add(lblAlpha);
             grpGeneral.Controls.Add(lblBlue);
             grpGeneral.Controls.Add(lblGreen);
@@ -313,7 +312,6 @@ namespace Intersect.Editor.Forms.Editors
             grpGeneral.TabIndex = 14;
             grpGeneral.TabStop = false;
             grpGeneral.Text = "General";
-
             // 
             // lblAlpha
             // 
@@ -510,7 +508,7 @@ namespace Intersect.Editor.Forms.Editors
             // picNpc
             // 
             picNpc.BackColor = System.Drawing.Color.Black;
-
+            picNpc.Location = new System.Drawing.Point(64, 153);
             picNpc.Margin = new Padding(4, 3, 4, 3);
             picNpc.Name = "picNpc";
             picNpc.Size = new Size(112, 111);
@@ -1594,7 +1592,8 @@ namespace Intersect.Editor.Forms.Editors
             // 
             grpDrops.BackColor = System.Drawing.Color.FromArgb(45, 45, 48);
             grpDrops.BorderColor = System.Drawing.Color.FromArgb(90, 90, 90);
-
+            grpDrops.Controls.Add(nudDropMinAmount);
+            grpDrops.Controls.Add(lblDropMinAmount);
             grpDrops.Controls.Add(chkIndividualLoot);
             grpDrops.Controls.Add(btnDropRemove);
             grpDrops.Controls.Add(btnDropAdd);
@@ -1614,7 +1613,30 @@ namespace Intersect.Editor.Forms.Editors
             grpDrops.TabIndex = 30;
             grpDrops.TabStop = false;
             grpDrops.Text = "Drops";
-
+            // 
+            // nudDropMinAmount
+            // 
+            nudDropMinAmount.BackColor = System.Drawing.Color.FromArgb(69, 73, 74);
+            nudDropMinAmount.ForeColor = System.Drawing.Color.Gainsboro;
+            nudDropMinAmount.Location = new System.Drawing.Point(20, 178);
+            nudDropMinAmount.Margin = new Padding(4, 3, 4, 3);
+            nudDropMinAmount.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
+            nudDropMinAmount.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudDropMinAmount.Name = "nudDropMinAmount";
+            nudDropMinAmount.Size = new Size(108, 23);
+            nudDropMinAmount.TabIndex = 80;
+            nudDropMinAmount.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudDropMinAmount.ValueChanged += nudDropMinAmount_ValueChanged;
+            // 
+            // lblDropMinAmount
+            // 
+            lblDropMinAmount.AutoSize = true;
+            lblDropMinAmount.Location = new System.Drawing.Point(20, 156);
+            lblDropMinAmount.Margin = new Padding(4, 0, 4, 0);
+            lblDropMinAmount.Name = "lblDropMinAmount";
+            lblDropMinAmount.Size = new Size(78, 15);
+            lblDropMinAmount.TabIndex = 79;
+            lblDropMinAmount.Text = "Min Amount:";
             // 
             // chkIndividualLoot
             // 
@@ -1667,7 +1689,12 @@ namespace Intersect.Editor.Forms.Editors
             // 
             nudDropAmount.BackColor = System.Drawing.Color.FromArgb(69, 73, 74);
             nudDropAmount.ForeColor = System.Drawing.Color.Gainsboro;
-
+            nudDropAmount.Location = new System.Drawing.Point(147, 178);
+            nudDropAmount.Margin = new Padding(4, 3, 4, 3);
+            nudDropAmount.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
+            nudDropAmount.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudDropAmount.Name = "nudDropAmount";
+            nudDropAmount.Size = new Size(108, 23);
             nudDropAmount.TabIndex = 61;
             nudDropAmount.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nudDropAmount.ValueChanged += nudDropAmount_ValueChanged;
@@ -1711,7 +1738,12 @@ namespace Intersect.Editor.Forms.Editors
             // lblDropAmount
             // 
             lblDropAmount.AutoSize = true;
-
+            lblDropAmount.Location = new System.Drawing.Point(147, 156);
+            lblDropAmount.Margin = new Padding(4, 0, 4, 0);
+            lblDropAmount.Name = "lblDropAmount";
+            lblDropAmount.Size = new Size(80, 15);
+            lblDropAmount.TabIndex = 15;
+            lblDropAmount.Text = "Max Amount:";
             // 
             // lblDropChance
             // 
@@ -2170,7 +2202,7 @@ namespace Intersect.Editor.Forms.Editors
             ((System.ComponentModel.ISupportInitialize)nudHpRegen).EndInit();
             grpDrops.ResumeLayout(false);
             grpDrops.PerformLayout();
-
+            ((System.ComponentModel.ISupportInitialize)nudDropMinAmount).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudDropAmount).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudDropChance).EndInit();
             grpNpcVsNpc.ResumeLayout(false);
@@ -2186,52 +2218,52 @@ namespace Intersect.Editor.Forms.Editors
         private DarkGroupBox grpNpcs;
         private DarkGroupBox grpGeneral;
         private DarkComboBox cmbSprite;
-        private Label lblSpawnDuration;
-        private Label lblPic;
-        private PictureBox picNpc;
-        private Label lblName;
+        private System.Windows.Forms.Label lblSpawnDuration;
+        private System.Windows.Forms.Label lblPic;
+        private System.Windows.Forms.PictureBox picNpc;
+        private System.Windows.Forms.Label lblName;
         private DarkTextBox txtName;
         private DarkGroupBox grpStats;
-        private Label lblMana;
-        private Label lblHP;
-        private Label lblExp;
-        private Label lblSightRange;
-        private Panel pnlContainer;
+        private System.Windows.Forms.Label lblMana;
+        private System.Windows.Forms.Label lblHP;
+        private System.Windows.Forms.Label lblExp;
+        private System.Windows.Forms.Label lblSightRange;
+        private System.Windows.Forms.Panel pnlContainer;
         private DarkButton btnSave;
         private DarkButton btnCancel;
         private DarkGroupBox grpSpells;
         private DarkButton btnRemove;
         private DarkButton btnAdd;
-        private ListBox lstSpells;
-        private Label lblSpell;
+        private System.Windows.Forms.ListBox lstSpells;
+        private System.Windows.Forms.Label lblSpell;
         private DarkComboBox cmbFreq;
-        private Label lblFreq;
+        private System.Windows.Forms.Label lblFreq;
         private DarkGroupBox grpNpcVsNpc;
-        private Label lblNPC;
+        private System.Windows.Forms.Label lblNPC;
         private DarkButton btnRemoveAggro;
         private DarkButton btnAddAggro;
-        private ListBox lstAggro;
+        private System.Windows.Forms.ListBox lstAggro;
         private DarkCheckBox chkAttackAllies;
         private DarkCheckBox chkEnabled;
         private DarkToolStrip toolStrip;
-        private ToolStripButton toolStripItemNew;
-        private ToolStripSeparator toolStripSeparator1;
-        private ToolStripButton toolStripItemDelete;
-        private ToolStripSeparator toolStripSeparator2;
-        public ToolStripButton toolStripItemCopy;
-        public ToolStripButton toolStripItemPaste;
-        private ToolStripSeparator toolStripSeparator3;
-        public ToolStripButton toolStripItemUndo;
+        private System.Windows.Forms.ToolStripButton toolStripItemNew;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton toolStripItemDelete;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        public System.Windows.Forms.ToolStripButton toolStripItemCopy;
+        public System.Windows.Forms.ToolStripButton toolStripItemPaste;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        public System.Windows.Forms.ToolStripButton toolStripItemUndo;
         private DarkGroupBox grpCombat;
         private DarkComboBox cmbScalingStat;
-        private Label lblScalingStat;
-        private Label lblScaling;
+        private System.Windows.Forms.Label lblScalingStat;
+        private System.Windows.Forms.Label lblScaling;
         private DarkComboBox cmbDamageType;
-        private Label lblDamageType;
-        private Label lblCritChance;
+        private System.Windows.Forms.Label lblDamageType;
+        private System.Windows.Forms.Label lblCritChance;
         private DarkComboBox cmbAttackAnimation;
-        private Label lblAttackAnimation;
-        private Label lblDamage;
+        private System.Windows.Forms.Label lblAttackAnimation;
+        private System.Windows.Forms.Label lblDamage;
         private DarkComboBox cmbHostileNPC;
         private DarkComboBox cmbSpell;
         private DarkNumericUpDown nudSpd;
@@ -2239,11 +2271,11 @@ namespace Intersect.Editor.Forms.Editors
         private DarkNumericUpDown nudDef;
         private DarkNumericUpDown nudMag;
         private DarkNumericUpDown nudStr;
-        private Label lblSpd;
-        private Label lblMR;
-        private Label lblDef;
-        private Label lblMag;
-        private Label lblStr;
+        private System.Windows.Forms.Label lblSpd;
+        private System.Windows.Forms.Label lblMR;
+        private System.Windows.Forms.Label lblDef;
+        private System.Windows.Forms.Label lblMag;
+        private System.Windows.Forms.Label lblStr;
         private DarkNumericUpDown nudScaling;
         private DarkNumericUpDown nudDamage;
         private DarkNumericUpDown nudCritChance;
@@ -2252,24 +2284,24 @@ namespace Intersect.Editor.Forms.Editors
         private DarkNumericUpDown nudMana;
         private DarkNumericUpDown nudHp;
         private DarkNumericUpDown nudExp;
-        private Label lblLevel;
+        private System.Windows.Forms.Label lblLevel;
         private DarkNumericUpDown nudLevel;
         private DarkGroupBox grpDrops;
         private DarkButton btnDropRemove;
         private DarkButton btnDropAdd;
-        private ListBox lstDrops;
+        private System.Windows.Forms.ListBox lstDrops;
         private DarkNumericUpDown nudDropAmount;
         private DarkNumericUpDown nudDropChance;
         private DarkComboBox cmbDropItem;
-        private Label lblDropAmount;
-        private Label lblDropChance;
-        private Label lblDropItem;
+        private System.Windows.Forms.Label lblDropAmount;
+        private System.Windows.Forms.Label lblDropChance;
+        private System.Windows.Forms.Label lblDropItem;
         private DarkGroupBox grpRegen;
         private DarkNumericUpDown nudMpRegen;
         private DarkNumericUpDown nudHpRegen;
-        private Label lblHpRegen;
-        private Label lblManaRegen;
-        private Label lblRegenHint;
+        private System.Windows.Forms.Label lblHpRegen;
+        private System.Windows.Forms.Label lblManaRegen;
+        private System.Windows.Forms.Label lblRegenHint;
         private DarkGroupBox grpCommonEvents;
         private DarkGroupBox grpBehavior;
         private DarkCheckBox chkSwarm;
@@ -2277,45 +2309,45 @@ namespace Intersect.Editor.Forms.Editors
         private DarkButton btnAttackOnSightCond;
         private DarkButton btnPlayerCanAttackCond;
         private DarkButton btnPlayerFriendProtectorCond;
-        private Label lblMovement;
+        private System.Windows.Forms.Label lblMovement;
         private DarkComboBox cmbMovement;
         private DarkCheckBox chkAggressive;
         private DarkComboBox cmbOnDeathEventParty;
-        private Label lblOnDeathEventParty;
+        private System.Windows.Forms.Label lblOnDeathEventParty;
         private DarkComboBox cmbOnDeathEventKiller;
-        private Label lblOnDeathEventKiller;
+        private System.Windows.Forms.Label lblOnDeathEventKiller;
         private DarkNumericUpDown nudFlee;
-        private Label lblFlee;
+        private System.Windows.Forms.Label lblFlee;
         private DarkCheckBox chkFocusDamageDealer;
         private DarkNumericUpDown nudCritMultiplier;
-        private Label lblCritMultiplier;
+        private System.Windows.Forms.Label lblCritMultiplier;
         private DarkButton btnClearSearch;
         private DarkTextBox txtSearch;
         private DarkButton btnAddFolder;
-        private Label lblFolder;
+        private System.Windows.Forms.Label lblFolder;
         private DarkComboBox cmbFolder;
-        private ToolStripButton btnAlphabetical;
-        private ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton btnAlphabetical;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private DarkGroupBox grpAttackSpeed;
         private DarkNumericUpDown nudAttackSpeedValue;
-        private Label lblAttackSpeedValue;
+        private System.Windows.Forms.Label lblAttackSpeedValue;
         private DarkComboBox cmbAttackSpeedModifier;
-        private Label lblAttackSpeedModifier;
+        private System.Windows.Forms.Label lblAttackSpeedModifier;
         private DarkNumericUpDown nudRgbaA;
         private DarkNumericUpDown nudRgbaB;
         private DarkNumericUpDown nudRgbaG;
         private DarkNumericUpDown nudRgbaR;
-        private Label lblAlpha;
-        private Label lblBlue;
-        private Label lblGreen;
-        private Label lblRed;
+        private System.Windows.Forms.Label lblAlpha;
+        private System.Windows.Forms.Label lblBlue;
+        private System.Windows.Forms.Label lblGreen;
+        private System.Windows.Forms.Label lblRed;
         private DarkNumericUpDown nudResetRadius;
-        private Label lblResetRadius;
+        private System.Windows.Forms.Label lblResetRadius;
         private DarkCheckBox chkIndividualLoot;
         private Controls.GameObjectList lstGameObjects;
         private DarkGroupBox grpImmunities;
         private DarkNumericUpDown nudTenacity;
-        private Label lblTenacity;
+        private System.Windows.Forms.Label lblTenacity;
         private DarkCheckBox chkTaunt;
         private DarkCheckBox chkSleep;
         private DarkCheckBox chkTransform;
@@ -2324,6 +2356,7 @@ namespace Intersect.Editor.Forms.Editors
         private DarkCheckBox chkStun;
         private DarkCheckBox chkSilence;
         private DarkCheckBox chkKnockback;
-
+        private DarkNumericUpDown nudDropMinAmount;
+        private Label lblDropMinAmount;
     }
 }
