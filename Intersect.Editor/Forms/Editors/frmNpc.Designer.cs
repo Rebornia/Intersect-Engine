@@ -37,9 +37,7 @@ namespace Intersect.Editor.Forms.Editors
             txtSearch = new DarkTextBox();
             lstGameObjects = new Controls.GameObjectList();
             grpGeneral = new DarkGroupBox();
-            bossstats = new DarkButton();
-            lurestats = new DarkButton();
-            solostats = new DarkButton();
+
             lblAlpha = new Label();
             lblBlue = new Label();
             lblGreen = new Label();
@@ -137,6 +135,7 @@ namespace Intersect.Editor.Forms.Editors
             lblManaRegen = new Label();
             lblRegenHint = new Label();
             grpDrops = new DarkGroupBox();
+
             chkIndividualLoot = new DarkCheckBox();
             btnDropRemove = new DarkButton();
             btnDropAdd = new DarkButton();
@@ -214,6 +213,7 @@ namespace Intersect.Editor.Forms.Editors
             ((System.ComponentModel.ISupportInitialize)nudMpRegen).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudHpRegen).BeginInit();
             grpDrops.SuspendLayout();
+
             ((System.ComponentModel.ISupportInitialize)nudDropAmount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudDropChance).BeginInit();
             grpNpcVsNpc.SuspendLayout();
@@ -285,9 +285,7 @@ namespace Intersect.Editor.Forms.Editors
             // 
             grpGeneral.BackColor = System.Drawing.Color.FromArgb(45, 45, 48);
             grpGeneral.BorderColor = System.Drawing.Color.FromArgb(90, 90, 90);
-            grpGeneral.Controls.Add(bossstats);
-            grpGeneral.Controls.Add(lurestats);
-            grpGeneral.Controls.Add(solostats);
+
             grpGeneral.Controls.Add(lblAlpha);
             grpGeneral.Controls.Add(lblBlue);
             grpGeneral.Controls.Add(lblGreen);
@@ -315,39 +313,7 @@ namespace Intersect.Editor.Forms.Editors
             grpGeneral.TabIndex = 14;
             grpGeneral.TabStop = false;
             grpGeneral.Text = "General";
-            // 
-            // bossstats
-            // 
-            bossstats.Location = new System.Drawing.Point(8, 214);
-            bossstats.Margin = new Padding(4, 3, 4, 3);
-            bossstats.Name = "bossstats";
-            bossstats.Padding = new Padding(6);
-            bossstats.Size = new Size(105, 27);
-            bossstats.TabIndex = 81;
-            bossstats.Text = "MOB: Boss";
-            bossstats.Click += bossstats_Click;
-            // 
-            // lurestats
-            // 
-            lurestats.Location = new System.Drawing.Point(8, 183);
-            lurestats.Margin = new Padding(4, 3, 4, 3);
-            lurestats.Name = "lurestats";
-            lurestats.Padding = new Padding(6);
-            lurestats.Size = new Size(105, 27);
-            lurestats.TabIndex = 80;
-            lurestats.Text = "MOB: Lurar";
-            lurestats.Click += lurestats_Click;
-            // 
-            // solostats
-            // 
-            solostats.Location = new System.Drawing.Point(8, 153);
-            solostats.Margin = new Padding(4, 3, 4, 3);
-            solostats.Name = "solostats";
-            solostats.Padding = new Padding(6);
-            solostats.Size = new Size(105, 27);
-            solostats.TabIndex = 79;
-            solostats.Text = "MOB: Solo";
-            solostats.Click += solostats_Click;
+
             // 
             // lblAlpha
             // 
@@ -544,7 +510,7 @@ namespace Intersect.Editor.Forms.Editors
             // picNpc
             // 
             picNpc.BackColor = System.Drawing.Color.Black;
-            picNpc.Location = new System.Drawing.Point(115, 153);
+
             picNpc.Margin = new Padding(4, 3, 4, 3);
             picNpc.Name = "picNpc";
             picNpc.Size = new Size(112, 111);
@@ -1628,6 +1594,7 @@ namespace Intersect.Editor.Forms.Editors
             // 
             grpDrops.BackColor = System.Drawing.Color.FromArgb(45, 45, 48);
             grpDrops.BorderColor = System.Drawing.Color.FromArgb(90, 90, 90);
+
             grpDrops.Controls.Add(chkIndividualLoot);
             grpDrops.Controls.Add(btnDropRemove);
             grpDrops.Controls.Add(btnDropAdd);
@@ -1647,6 +1614,7 @@ namespace Intersect.Editor.Forms.Editors
             grpDrops.TabIndex = 30;
             grpDrops.TabStop = false;
             grpDrops.Text = "Drops";
+
             // 
             // chkIndividualLoot
             // 
@@ -1699,11 +1667,7 @@ namespace Intersect.Editor.Forms.Editors
             // 
             nudDropAmount.BackColor = System.Drawing.Color.FromArgb(69, 73, 74);
             nudDropAmount.ForeColor = System.Drawing.Color.Gainsboro;
-            nudDropAmount.Location = new System.Drawing.Point(20, 177);
-            nudDropAmount.Margin = new Padding(4, 3, 4, 3);
-            nudDropAmount.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
-            nudDropAmount.Name = "nudDropAmount";
-            nudDropAmount.Size = new Size(234, 23);
+
             nudDropAmount.TabIndex = 61;
             nudDropAmount.Value = new decimal(new int[] { 1, 0, 0, 0 });
             nudDropAmount.ValueChanged += nudDropAmount_ValueChanged;
@@ -1747,12 +1711,7 @@ namespace Intersect.Editor.Forms.Editors
             // lblDropAmount
             // 
             lblDropAmount.AutoSize = true;
-            lblDropAmount.Location = new System.Drawing.Point(16, 157);
-            lblDropAmount.Margin = new Padding(4, 0, 4, 0);
-            lblDropAmount.Name = "lblDropAmount";
-            lblDropAmount.Size = new Size(54, 15);
-            lblDropAmount.TabIndex = 15;
-            lblDropAmount.Text = "Amount:";
+
             // 
             // lblDropChance
             // 
@@ -2211,6 +2170,7 @@ namespace Intersect.Editor.Forms.Editors
             ((System.ComponentModel.ISupportInitialize)nudHpRegen).EndInit();
             grpDrops.ResumeLayout(false);
             grpDrops.PerformLayout();
+
             ((System.ComponentModel.ISupportInitialize)nudDropAmount).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudDropChance).EndInit();
             grpNpcVsNpc.ResumeLayout(false);
@@ -2364,8 +2324,6 @@ namespace Intersect.Editor.Forms.Editors
         private DarkCheckBox chkStun;
         private DarkCheckBox chkSilence;
         private DarkCheckBox chkKnockback;
-        private DarkButton bossstats;
-        private DarkButton lurestats;
-        private DarkButton solostats;
+
     }
 }
