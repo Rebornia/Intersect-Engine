@@ -278,12 +278,12 @@ namespace Intersect.Server.Entities
 
             //Check Map Entities For Hits
             var map = MapController.Get(spawn.MapId);
-            if (Math.Round(spawn.X) < 0 || Math.Round(spawn.X) >= Options.Instance.MapOpts.MapWidth ||
-                Math.Round(spawn.Y) < 0 || Math.Round(spawn.Y) >= Options.Instance.MapOpts.MapHeight)
+            if ((int)spawn.X < 0 || (int)spawn.X >= Options.Instance.MapOpts.MapWidth ||
+                (int)spawn.Y < 0 || (int)spawn.Y >= Options.Instance.MapOpts.MapHeight)
             {
                 return false;
             }
-            var attribute = map.Attributes[(int)Math.Round(spawn.X), (int)Math.Round(spawn.Y)];
+            var attribute = map.Attributes[(int)spawn.X, (int)spawn.Y];
 
             if (!killSpawn && attribute != null)
             {
@@ -305,9 +305,8 @@ namespace Intersect.Server.Entities
                     !spawn.Parent.HasGrappled &&
                     (spawn.X != Owner.X || spawn.Y != Owner.Y))
                 {
-                    if (!spawn.ProjectileBase.HomingBehavior && !spawn.ProjectileBase.DirectShotBehavior && 
-                        (spawn.Dir <= Direction.Right || spawn.Dir != Direction.None && Options.Instance.MapOpts.EnableDiagonalMovement)
-                    )
+                    if (spawn.Dir <= Direction.Right ||
+                        spawn.Dir != Direction.None && Options.Instance.MapOpts.EnableDiagonalMovement)
                     {
                         spawn.Parent.HasGrappled = true;
 
@@ -338,8 +337,8 @@ namespace Intersect.Server.Entities
                 for (var z = 0; z < entities.Count; z++)
                 {
                     if (entities[z] != null && entities[z] != spawn.Parent.Owner && entities[z].Z == spawn.Z &&
-                        (entities[z].X == Math.Round(spawn.X)) &&
-                        (entities[z].Y == Math.Round(spawn.Y)) &&
+                        (entities[z].X == Math.Round(spawn.X) || entities[z].X == Math.Ceiling(spawn.X) || entities[z].X == Math.Floor(spawn.X)) &&
+                        (entities[z].Y == Math.Round(spawn.Y) || entities[z].Y == Math.Ceiling(spawn.Y) || entities[z].Y == Math.Floor(spawn.Y)) &&
                         (spawn.X != Owner.X || spawn.Y != Owner.Y))
                     {
                         killSpawn = spawn.HitEntity(entities[z]);
@@ -374,9 +373,19 @@ namespace Intersect.Server.Entities
                 //loop through surrounding maps
                 for (var y = map.MapGridY - 1; y <= map.MapGridY + 1; y++)
                 {
-                    for (var x = map.MapGridX - 1; x <= map.MapGridX + 1; x++)
+                    if (y == -1 || y >= grid.Height)
                     {
-                        if (x < 0 || x >= grid.MapIdGrid.GetLength(0) || y < 0 || y >= grid.MapIdGrid.GetLength(1))
+                        continue;
+                    }
+
+                    for (var x = map.MapGridY - 1; x <= map.MapGridX + 1; x++)
+                    {
+                        if (x == -1 || x >= grid.Width)
+                        {
+                            continue;
+                        }
+
+                        if (x >= grid.MapIdGrid.GetLength(0) || y >= grid.MapIdGrid.GetLength(1))
                         {
                             continue;
                         }
@@ -413,9 +422,19 @@ namespace Intersect.Server.Entities
                 //loop through surrounding maps
                 for (var y = map.MapGridY - 1; y <= map.MapGridY + 1; y++)
                 {
-                    for (var x = map.MapGridX - 1; x <= map.MapGridX + 1; x++)
+                    if (y == -1 || y >= grid.Height)
                     {
-                        if (x < 0 || x >= grid.MapIdGrid.GetLength(0) || y < 0 || y >= grid.MapIdGrid.GetLength(1))
+                        continue;
+                    }
+
+                    for (var x = map.MapGridY - 1; x <= map.MapGridX + 1; x++)
+                    {
+                        if (x == -1 || x >= grid.Width)
+                        {
+                            continue;
+                        }
+
+                        if (x >= grid.MapIdGrid.GetLength(0) || y >= grid.MapIdGrid.GetLength(1))
                         {
                             continue;
                         }
@@ -453,7 +472,7 @@ namespace Intersect.Server.Entities
                 spawn.Distance++;
                 spawn.TransmittionTimer += (long)(Base.Speed / (float)Base.Range);
                 
-                if (Target != default && Target.Id != Owner.Id && (Base.HomingBehavior || Base.DirectShotBehavior))
+                if (Target != default && (Base.HomingBehavior || Base.DirectShotBehavior))
                 {
                     //homing logic
                     mLastTargetX = Target.X;
