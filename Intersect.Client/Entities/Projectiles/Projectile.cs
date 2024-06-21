@@ -372,10 +372,6 @@ namespace Intersect.Client.Entities.Projectiles
                 var map = Maps.MapInstance.Get(spawn.SpawnMapId);
                 for (var y = map.GridY - 1; y <= map.GridY + 1; y++)
                 {
-                    if (y < 0 || y >= Options.MapHeight)
-                    {
-                        continue;
-                    }
 
                     for (var x = map.GridX - 1; x <= map.GridX + 1; x++)
                     {
@@ -418,10 +414,6 @@ namespace Intersect.Client.Entities.Projectiles
                 var map = Maps.MapInstance.Get(spawn.SpawnMapId);
                 for (var y = map.GridY - 1; y <= map.GridY + 1; y++)
                 {
-                    if (y < 0 || y >= Options.MapHeight)
-                    {
-                        continue;
-                    }
 
                     for (var x = map.GridX - 1; x <= map.GridX + 1; x++)
                     {
