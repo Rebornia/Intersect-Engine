@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Intersect.Enums;
 using Intersect.GameObjects;
@@ -167,7 +167,8 @@ namespace Intersect.Server.Entities
                         var mapId = selectedTile.GetMapId();
                         if (MapController.TryGetInstanceFromMap(mapId, MapInstanceId, out var mapInstance))
                         {
-                            mapInstance.SpawnItem(selectedTile.GetX(), selectedTile.GetY(), item, item.Quantity, killer.Id);
+                            var randomQuantity = Randomization.Next(1, item.Quantity + 1);
+                            mapInstance.SpawnItem(selectedTile.GetX(), selectedTile.GetY(), item, randomQuantity, killer.Id);
                         }
                     }
                 }
