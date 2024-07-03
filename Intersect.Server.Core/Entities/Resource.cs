@@ -1,5 +1,7 @@
+
 using System;
 using System.Collections.Generic;
+
 using Intersect.Enums;
 using Intersect.GameObjects;
 using Intersect.Network.Packets.Server;
