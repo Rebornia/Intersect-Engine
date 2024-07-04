@@ -13,6 +13,7 @@ using Intersect.Configuration;
 
 using Intersect.Network;
 using Intersect.Utilities;
+using Intersect.Client.Framework.Gwen;
 
 namespace Intersect.Client.Interface.Menu
 {
