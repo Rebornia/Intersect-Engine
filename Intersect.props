@@ -1,14 +1,14 @@
 <Project>
   <PropertyGroup Label="Package Properties">
-    <Authors>The Celtos</Authors>
-    <Copyright>Copyright © The Celtos 2012</Copyright>
-    <Description>The Celtos MMORPG 2D</Description>
+    <Authors>Rebornia</Authors>
+    <Copyright>Copyright © Rebornia 2012</Copyright>
+    <Description>Rebornia MMORPG 2D</Description>
     <PackageIcon>$(IntersectRepoPath)\assets\intersect-logo-qu.png</PackageIcon>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <Product>The Celtos</Product>
+    <Product>Rebornia</Product>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AscensionGameDev/Intersect-Engine</RepositoryUrl>
-    <Version>11.0.0.0</Version>
+    <Version>12.0.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Label="Assembly Properties">

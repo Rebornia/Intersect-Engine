@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows.Forms;
 using DarkUI.Controls;
 using Timer = System.Windows.Forms.Timer;
@@ -182,7 +182,7 @@ namespace Intersect.Editor.Forms
             MaximizeBox = false;
             Name = "FrmLogin";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "The Celtos - Editor Login";
+            Text = "Rebornia - Editor Login";
             Load += frmLogin_Load;
             KeyDown += FrmLogin_KeyDown;
             ((ISupportInitialize)picLogo).EndInit();
