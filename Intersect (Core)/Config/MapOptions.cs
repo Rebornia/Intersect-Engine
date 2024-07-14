@@ -21,6 +21,11 @@ public partial class MapOptions
     public bool DisablePlayerDropsInArenaMaps { get; set; } = false;
 
     /// <summary>
+    /// option to drop items on safe type maps
+    /// </summary>
+    public bool DisablePlayerDropsInSafeMaps { get; set; } = false;
+
+    /// <summary>
     /// Controls whether two block attributes placed diagonally block or not.
     /// </summary>
     public bool EnableCrossingDiagonalBlocks { get; set; }
@@ -30,32 +35,6 @@ public partial class MapOptions
     /// </summary>
     public bool EnableDiagonalMovement
     {
-        private bool _enableDiagonalMovement = true;
-
-        /// <summary>
-        /// option to dont loss exp in arena type maps
-        /// </summary>
-        public bool DisableExpLossInArenaMaps { get; set; } = false;
-
-        /// <summary>
-        /// option to drop items on arena type maps
-        /// </summary>
-        public bool DisablePlayerDropsInArenaMaps { get; set; } = false;
-
-        /// <summary>
-        /// option to drop items on safe type maps
-        /// </summary>
-        public bool DisablePlayerDropsInSafeMaps { get; set; } = false;
-
-        /// <summary>
-        /// Controls whether two block attributes placed diagonally block or not.
-        /// </summary>
-        public bool EnableCrossingDiagonalBlocks { get; set; }
-
-        /// <summary>
-        /// Indicates whether or not diagonal movement is enabled for entities within the map.
-        /// </summary>
-        public bool EnableDiagonalMovement
         get { return _enableDiagonalMovement; }
         set
         {

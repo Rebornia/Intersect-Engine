@@ -112,7 +112,6 @@ namespace Intersect.Editor.Forms
             picLogo.Size = new Size(513, 238);
             picLogo.TabIndex = 4;
             picLogo.TabStop = false;
-            picLogo.Click += picLogo_Click;
             // 
             // lblVersion
             // 

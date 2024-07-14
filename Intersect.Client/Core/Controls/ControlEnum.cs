@@ -1,8 +1,7 @@
-namespace Intersect.Client.Core.Controls
+namespace Intersect.Client.Core.Controls;
 
 
 public enum Control
-
 {
 
     MoveUp,
@@ -45,28 +44,6 @@ public enum Control
 
     Screenshot,
 
-    Hotkey11,
-
-    Hotkey12,
-
-    Hotkey13,
-
-    Hotkey14,
-
-    Hotkey15,
-
-    Hotkey16,
-
-    Hotkey17,
-
-    Hotkey18,
-
-    Hotkey19,
-
-    Hotkey20,
-
-    Screenshot,
-	
     OpenMenu,
 
     OpenInventory,
