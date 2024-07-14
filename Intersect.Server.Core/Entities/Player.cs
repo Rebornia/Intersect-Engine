@@ -506,10 +506,6 @@ public partial class Player : Entity
 
         PacketSender.SendEntityLeave(this);
 
-        if (!string.IsNullOrWhiteSpace(Strings.Player.left.ToString()))
-        {
-            PacketSender.SendGlobalMsg(Strings.Player.left.ToString(Name, Options.Instance.GameName));
-        }
 
         // Remove this player from the online list
         if (OnlinePlayers?.ContainsKey(Id) ?? false)
