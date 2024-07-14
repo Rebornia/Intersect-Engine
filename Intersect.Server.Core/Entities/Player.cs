@@ -1256,7 +1256,7 @@ public partial class Player : Entity
 
         if (amount > 0)
         {
-            PacketSender.SendChatMsg(this, " You gained " + Exp + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
+            PacketSender.SendChatMsg(this, " You gained " + amount + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
         }
 
         if (!CheckLevelUp())
@@ -1281,7 +1281,7 @@ public partial class Player : Entity
 
         if (amount > 0)
         {
-            PacketSender.SendChatMsg(this, " You loss " + Exp + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
+            PacketSender.SendChatMsg(this, " You loss " + amount + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
         }
 
         PacketSender.SendExperience(this);
