@@ -165,6 +165,7 @@ public partial class Resource : Entity
                     var mapId = selectedTile.GetMapId();
                     if (MapController.TryGetInstanceFromMap(mapId, MapInstanceId, out var mapInstance))
                     {
+                        var randomQuantity = Randomization.Next(1, item.Quantity + 1);
                         mapInstance.SpawnItem(selectedTile.GetX(), selectedTile.GetY(), item, item.Quantity, killer.Id);
                     }
                 }
