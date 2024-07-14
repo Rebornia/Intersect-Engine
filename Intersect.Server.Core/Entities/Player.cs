@@ -1281,7 +1281,7 @@ public partial class Player : Entity
 
         if (amount > 0)
         {
-            PacketSender.SendChatMsg(this, " You loss " + amount + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
+            PacketSender.SendChatMsg(this, " You lost " + amount + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
         }
 
         PacketSender.SendExperience(this);
