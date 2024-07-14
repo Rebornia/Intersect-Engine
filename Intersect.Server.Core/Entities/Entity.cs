@@ -3041,7 +3041,8 @@ public abstract partial class Entity : IDisposable
 
     protected virtual void DropItems(Entity killer, bool sendUpdate = true)
     {
-        if (this is Player && Options.Instance.MapOpts.DisablePlayerDropsInArenaMaps && Map.ZoneType == MapZone.Arena)
+        if (this is Player && Options.Instance.MapOpts.DisablePlayerDropsInArenaMaps && Map.ZoneType == MapZone.Arena ||
+            this is Player && Options.Instance.MapOpts.DisablePlayerDropsInSafeMaps && Map.ZoneType == MapZone.Safe)
         {
             return;
         }
@@ -3073,11 +3074,16 @@ public abstract partial class Entity : IDisposable
             // Spawn the actual item!
             if (MapController.TryGetInstanceFromMap(MapId, MapInstanceId, out var instance))
             {
-                instance.SpawnItem(X, Y, drop, drop.Quantity, lootOwner, sendUpdate);
+                int YRndom = Y + Randomization.Next(0, 2); // Y mais um número aleatório entre 1 e 3
+                int XRndom = X + Randomization.Next(0, 2); // X mais um número aleatório entre 1 e 3
+                var randomQuantity = Randomization.Next(1, drop.Quantity + 1);               
+                instance.SpawnItem(XRndom, YRndom, drop, randomQuantity, lootOwner, sendUpdate);
             }
 
             // Process the drop (for players this would remove it from their inventory)
             OnDropItem(slot, drop);
+            var player = this as Player;
+            PacketSender.SendChatMsg(player, "You dropped: " + drop.ItemName.ToString() + " !", ChatMessageType.Notice, CustomColors.Alerts.Declined);
         }
     }
 
