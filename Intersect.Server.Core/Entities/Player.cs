@@ -924,7 +924,7 @@ public partial class Player : Entity
             this.UpdateGlobalCooldown();
         }
     }
-    
+
     public void RemoveEvent(Guid id, bool sendLeave = true)
     {
         Event outInstance;
@@ -1254,6 +1254,11 @@ public partial class Player : Entity
             Exp = 0;
         }
 
+        if (amount > 0)
+        {
+            PacketSender.SendChatMsg(this, " You gained " + Exp + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
+        }
+
         if (!CheckLevelUp())
         {
             PacketSender.SendExperience(this);
@@ -1262,7 +1267,8 @@ public partial class Player : Entity
 
     public void TakeExperience(long amount)
     {
-        if (this is Player && Options.Instance.MapOpts.DisableExpLossInArenaMaps && Map.ZoneType == MapZone.Arena)
+        if (this is Player && Options.Instance.MapOpts.DisableExpLossInArenaMaps && Map.ZoneType == MapZone.Arena || 
+            this is Player && Options.Instance.MapOpts.DisableExpLossInArenaMaps && Map.ZoneType == MapZone.Safe)
         {
             return;
         }
@@ -1271,6 +1277,11 @@ public partial class Player : Entity
         if (Exp < 0)
         {
             Exp = 0;
+        }
+
+        if (amount > 0)
+        {
+            PacketSender.SendChatMsg(this, " You loss " + Exp + " experience.", ChatMessageType.Notice, CustomColors.Alerts.Success);
         }
 
         PacketSender.SendExperience(this);
