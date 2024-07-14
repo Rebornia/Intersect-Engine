@@ -1318,13 +1318,17 @@ public partial class Player : Entity
                     var playerEvent = descriptor.OnDeathEvent;
                     var partyEvent = descriptor.OnDeathPartyEvent;
 
+                    // Calcula a penalidade ou bônus de XP baseada na diferença de níveis
+                    int levelDifference = npc.Level - Level;
+                    float xpMultiplier = CalculateXpMultiplier(levelDifference);
+
                     // If in party, split the exp.
                     if (Party != null && Party.Count > 0)
                     {
                         var partyMembersInXpRange = Party.Where(partyMember => partyMember.InRangeOf(this, Options.Party.SharedXpRange)).ToArray();
                         float bonusExp = Options.Instance.PartyOpts.BonusExperiencePercentPerMember / 100;
                         var multiplier = 1.0f + (partyMembersInXpRange.Length * bonusExp);
-                        var partyExperience = (int)(descriptor.Experience * multiplier) / partyMembersInXpRange.Length;
+                        var partyExperience = (int)(descriptor.Experience * multiplier * xpMultiplier) / partyMembersInXpRange.Length;
                         foreach (var partyMember in partyMembersInXpRange)
                         {
                             partyMember.GiveExperience(partyExperience);
@@ -1344,7 +1348,7 @@ public partial class Player : Entity
                     }
                     else
                     {
-                        GiveExperience(descriptor.Experience);
+                        GiveExperience((int)(descriptor.Experience * xpMultiplier));
                         UpdateQuestKillTasks(entity);
                     }
 
@@ -1366,6 +1370,95 @@ public partial class Player : Entity
 
                     break;
                 }
+        }
+    }
+
+    private float CalculateXpMultiplier(int levelDifference)
+    {
+        switch (levelDifference)
+        {
+            case >= 16:
+                return 0.40f;
+            case 15:
+                return 1.15f;
+            case 14:
+                return 1.20f;
+            case 13:
+                return 1.25f;
+            case 12:
+                return 1.30f;
+            case 11:
+                return 1.35f;
+            case 10:
+                return 1.40f;
+            case 9:
+                return 1.35f;
+            case 8:
+                return 1.30f;
+            case 7:
+                return 1.25f;
+            case 6:
+                return 1.20f;
+            case 5:
+                return 1.15f;
+            case 4:
+                return 1.10f;
+            case 3:
+                return 1.05f;
+            case 2:
+                return 1.00f;
+            case 1:
+                return 1.00f;
+            case 0:
+                return 1.00f;
+            case -1:
+                return 1.00f;
+            case -2:
+                return 1.00f;
+            case -3:
+                return 1.00f;
+            case -4:
+                return 1.00f;
+            case -5:
+                return 1.00f;
+            case -6:
+                return 0.95f;
+            case -7:
+                return 0.95f;
+            case -8:
+                return 0.95f;
+            case -9:
+                return 0.95f;
+            case -10:
+                return 0.95f;
+            case -11:
+                return 0.90f;
+            case -12:
+                return 0.90f;
+            case -13:
+                return 0.90f;
+            case -14:
+                return 0.90f;
+            case -15:
+                return 0.90f;
+            case -16:
+                return 0.85f;
+            case -17:
+                return 0.85f;
+            case -18:
+                return 0.85f;
+            case -19:
+                return 0.85f;
+            case -20:
+                return 0.85f;
+            case >= -25 and <= -21:
+                return 0.60f;
+            case >= -30 and <= -26:
+                return 0.35f;
+            case < -30:
+                return 0.10f;
+            default:
+                return 0.00f; // Fora do range especificado, não ganha XP
         }
     }
 
