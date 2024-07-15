@@ -1314,19 +1314,19 @@ public partial class Player : Entity
                     var playerEvent = descriptor.OnDeathEvent;
                     var partyEvent = descriptor.OnDeathPartyEvent;
 
-                    // Calcula a penalidade ou bônus de XP baseada na diferença de níveis
-                    int levelDifference = npc.Level - Level;
-                    float xpMultiplier = CalculateXpMultiplier(levelDifference);
-
                     // If in party, split the exp.
                     if (Party != null && Party.Count > 0)
                     {
                         var partyMembersInXpRange = Party.Where(partyMember => partyMember.InRangeOf(this, Options.Party.SharedXpRange)).ToArray();
                         float bonusExp = Options.Instance.PartyOpts.BonusExperiencePercentPerMember / 100;
-                        var multiplier = 1.0f + (partyMembersInXpRange.Length * bonusExp);
-                        var partyExperience = (int)(descriptor.Experience * multiplier * xpMultiplier) / partyMembersInXpRange.Length;
+                        var baseExperience = descriptor.Experience;
+                        var totalMultiplier = 1.0f + (partyMembersInXpRange.Length * bonusExp);
+
                         foreach (var partyMember in partyMembersInXpRange)
                         {
+                            int levelDifference = npc.Level - partyMember.Level;
+                            float xpMultiplier = CalculateXpMultiplier(levelDifference);
+                            var partyExperience = (int)(baseExperience * totalMultiplier * xpMultiplier / partyMembersInXpRange.Length);
                             partyMember.GiveExperience(partyExperience);
                             partyMember.UpdateQuestKillTasks(entity);
                         }
@@ -1344,6 +1344,8 @@ public partial class Player : Entity
                     }
                     else
                     {
+                        int levelDifference = npc.Level - Level;
+                        float xpMultiplier = CalculateXpMultiplier(levelDifference);
                         GiveExperience((int)(descriptor.Experience * xpMultiplier));
                         UpdateQuestKillTasks(entity);
                     }
@@ -1457,6 +1459,8 @@ public partial class Player : Entity
                 return 0.00f; // Fora do range especificado, não ganha XP
         }
     }
+
+
 
     public void UpdateQuestKillTasks(Entity en)
     {
