@@ -4,13 +4,12 @@ using Newtonsoft.Json;
 
 namespace Intersect.Client.Core.Controls;
 
-
 public partial class Controls
 {
 
     public readonly IDictionary<Control, ControlMap> ControlMapping;
 
-    public Controls(Controls gameControls = null)
+    public Controls(Controls? gameControls = null)
     {
         ControlMapping = new Dictionary<Control, ControlMap>();
 
@@ -46,14 +45,18 @@ public partial class Controls
                     }
                     else
                     {
-                        bindings[bindingIndex] = JsonConvert.DeserializeObject<ControlValue>(preference);
+                        var controlObj = JsonConvert.DeserializeObject<ControlValue>(preference);
+                        if (controlObj != null)
+                        {
+                            bindings[bindingIndex] = controlObj;
+                        }
                     }
                 }
             }
         }
     }
 
-    public static Controls ActiveControls { get; set; }
+    public static Controls? ActiveControls { get; set; }
 
     public void ResetDefaults()
     {
@@ -105,10 +108,6 @@ public partial class Controls
         CreateControlMap(Control.HoldToZoomIn, ControlValue.Default, ControlValue.Default);
         CreateControlMap(Control.HoldToZoomOut, ControlValue.Default, ControlValue.Default);
         CreateControlMap(Control.ToggleFullscreen, new ControlValue(Keys.Alt, Keys.Enter), ControlValue.Default);
-        // CreateControlMap(Control.Submit, new ControlValue(Keys.None, Keys.Enter), ControlValue.Default);
-        // CreateControlMap(Control.Cancel, new ControlValue(Keys.None, Keys.Back), ControlValue.Default);
-        // CreateControlMap(Control.Next, new ControlValue(Keys.None, Keys.Tab), ControlValue.Default);
-        // CreateControlMap(Control.Previous, new ControlValue(Keys.Shift, Keys.Tab), ControlValue.Default);
     }
 
     private static void MigrateControlBindings(Control control)
@@ -207,5 +206,4 @@ public partial class Controls
     {
         ControlMapping[control] = new ControlMap(controlMap);
     }
-
 }

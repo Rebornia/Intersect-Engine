@@ -1,5 +1,6 @@
 using Intersect.Admin.Actions;
 using Intersect.Client.Core.Controls;
+using Intersect.Client.Entities;
 using Intersect.Client.Framework.GenericClasses;
 using Intersect.Client.Framework.Graphics;
 using Intersect.Client.Framework.Input;
@@ -15,16 +16,23 @@ namespace Intersect.Client.Core;
 
 public static partial class Input
 {
-
     public delegate void HandleKeyEvent(Keys modifier, Keys key);
 
-    public static HandleKeyEvent KeyDown;
+    private static HandleKeyEvent? _keyDown;
 
-    public static HandleKeyEvent KeyUp;
+    private static HandleKeyEvent? _keyUp;
 
-    public static HandleKeyEvent MouseDown;
+    private static HandleKeyEvent? _mouseDown;
 
-    public static HandleKeyEvent MouseUp;
+    private static HandleKeyEvent? _mouseUp;
+
+    public static HandleKeyEvent? KeyDown { get => _keyDown; set => _keyDown = value; }
+
+    public static HandleKeyEvent? KeyUp { get => _keyUp; set => _keyUp = value; }
+
+    public static HandleKeyEvent? MouseDown { get => _mouseDown; set => _mouseDown = value; }
+
+    public static HandleKeyEvent? MouseUp { get => _mouseUp; set => _mouseUp = value; }
 
     private static void HandleZoomOut()
     {
@@ -121,7 +129,7 @@ public static partial class Input
             }
             else if (Globals.Me != null && Globals.Me.TargetIndex != Guid.Empty && !Globals.Me.Status.Any(s => s.Type == Enums.SpellEffect.Taunt))
             {
-                Globals.Me.ClearTarget();
+                _ = Globals.Me.ClearTarget();
             }
             else
             {
@@ -179,6 +187,11 @@ public static partial class Input
 
                         case Control.ToggleFullscreen:
                         {
+                            if (Graphics.Renderer == default)
+                            {
+                                break;
+                            }
+
                             Globals.Database.FullScreen = !Globals.Database.FullScreen;
                             Globals.Database.SavePreferences();
                             Graphics.Renderer.OverrideResolution = Resolution.Empty;
@@ -187,7 +200,7 @@ public static partial class Input
                         }
 
                         case Control.OpenDebugger:
-                            MutableInterface.ToggleDebug();
+                            _ = MutableInterface.ToggleDebug();
                             break;
                     }
 
@@ -197,6 +210,20 @@ public static partial class Input
                             break;
 
                         case GameStates.Menu:
+                            var selectCharacterWindow = Interface.Interface.MenuUi.MainMenu.mSelectCharacterWindow;
+
+                            switch (control)
+                            {
+                                case Control.Enter:
+                                    if (!selectCharacterWindow.IsHidden && selectCharacterWindow.Characters[selectCharacterWindow.mSelectedChar] != null)
+                                    {
+                                        selectCharacterWindow.PlayButton_Clicked(null, null);
+                                        consumeKey = true;
+                                    }
+
+                                    break;
+                            }
+
                             break;
 
                         case GameStates.InGame:
@@ -218,7 +245,7 @@ public static partial class Input
                                     break;
 
                                 case Control.Block:
-                                    Globals.Me?.TryBlock();
+                                    _ = (Globals.Me?.TryBlock());
 
                                     break;
 
@@ -228,12 +255,18 @@ public static partial class Input
                                     break;
 
                                 case Control.PickUp:
-                                    Globals.Me?.TryPickupItem(Globals.Me.MapInstance.Id, Globals.Me.Y * Options.MapWidth + Globals.Me.X);
+                                    if (Globals.Me != default && Globals.Me.MapInstance != default)
+                                    {
+                                        _ = Player.TryPickupItem(
+                                                Globals.Me.MapInstance.Id,
+                                                Globals.Me.Y * Options.MapWidth + Globals.Me.X
+                                            );
+                                    }
 
                                     break;
 
                                 case Control.Enter:
-                                    if (canFocusChat)
+                                    if (canFocusChat && Interface.Interface.GameUi != default)
                                     {
                                         Interface.Interface.GameUi.FocusChat = true;
                                         consumeKey = true;
@@ -289,7 +322,7 @@ public static partial class Input
                                     break;
 
                                 case Control.OpenFriends:
-                                    Interface.Interface.GameUi?.GameMenu?.ToggleFriendsWindow();
+                                    _ = (Interface.Interface.GameUi?.GameMenu?.ToggleFriendsWindow());
 
                                     break;
 
@@ -304,7 +337,7 @@ public static partial class Input
                                     break;
 
                                 case Control.OpenGuild:
-                                    Interface.Interface.GameUi?.GameMenu.ToggleGuildWindow();
+                                    _ = (Interface.Interface.GameUi?.GameMenu.ToggleGuildWindow());
 
                                     break;
                             }
@@ -407,7 +440,9 @@ public static partial class Input
 
         if (Controls.Controls.ControlHasKey(Control.PickUp, modifier, key))
         {
-            if (Globals.Me.TryPickupItem(Globals.Me.MapInstance.Id, Globals.Me.Y * Options.MapWidth + Globals.Me.X, Guid.Empty, true))
+            if (Globals.Me.MapInstance != default &&
+                Player.TryPickupItem(Globals.Me.MapInstance.Id, Globals.Me.Y * Options.MapWidth + Globals.Me.X, Guid.Empty, true)
+            )
             {
                 return;
             }
@@ -491,7 +526,7 @@ public static partial class Input
         var x = (int)mouseInWorld.X;
         var y = (int)mouseInWorld.Y;
 
-        foreach (MapInstance map in MapInstance.Lookup.Values)
+        foreach (MapInstance map in MapInstance.Lookup.Values.Cast<MapInstance>())
         {
             if (!(x >= map.GetX()) || !(x <= map.GetX() + Options.MapWidth * Options.TileWidth))
             {
@@ -523,21 +558,18 @@ public static partial class Input
 
     public static bool IsModifier(Keys key)
     {
-        switch (key)
+        return key switch
         {
-            case Keys.Control:
-            case Keys.ControlKey:
-            case Keys.LControlKey:
-            case Keys.RControlKey:
-            case Keys.LShiftKey:
-            case Keys.RShiftKey:
-            case Keys.Shift:
-            case Keys.ShiftKey:
-            case Keys.Alt:
-                return true;
-
-            default:
-                return false;
-        }
+            Keys.Control or
+            Keys.ControlKey or
+            Keys.LControlKey or
+            Keys.RControlKey or
+            Keys.LShiftKey or
+            Keys.RShiftKey or
+            Keys.Shift or
+            Keys.ShiftKey or
+            Keys.Alt => true,
+            _ => false,
+        };
     }
 }
