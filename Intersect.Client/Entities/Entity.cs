@@ -1677,7 +1677,39 @@ public partial class Entity : IEntity
             Globals.ContentManager.GetTexture(TextureType.Misc, "shieldbar.png")
         );
     }
+    public void UpdateHealthColor(float currentHealth, float maxVital, ref Color hpcolor)
+    {
+        float percentage = currentHealth / maxVital;
 
+        if (percentage > 0.8f)
+        {
+            hpcolor = Lerp(Color.Green, Color.ForestGreen, (percentage - 0.8f) / 0.2f);
+        }
+        else if (percentage > 0.6f)
+        {
+            hpcolor = Lerp(Color.ForestGreen, Color.Yellow, (percentage - 0.6f) / 0.2f);
+        }
+        else if (percentage > 0.4f)
+        {
+            hpcolor = Lerp(Color.Yellow, Color.Orange, (percentage - 0.4f) / 0.2f);
+        }
+        else if (percentage > 0.2f)
+        {
+            hpcolor = Lerp(Color.Orange, Color.OrangeRed, (percentage - 0.2f) / 0.2f);
+        }
+        else
+        {
+            hpcolor = Lerp(Color.OrangeRed, Color.Red, percentage / 0.2f);
+        }
+    }
+
+    public Color Lerp(Color start, Color end, float amount)
+    {
+        int r = (int)(start.R + (end.R - start.R) * amount);
+        int g = (int)(start.G + (end.G - start.G) * amount);
+        int b = (int)(start.B + (end.B - start.B) * amount);
+        return Color.FromArgb(r, g, b);
+    }
     public void DrawHpBar()
     {
         // Are we supposed to hide this HP bar?
@@ -1739,6 +1771,11 @@ public partial class Entity : IEntity
 
         y += boundingTeture.Height / 2;
 
+        float currentHealth = (float)Vital[(int)Enums.Vital.Health];
+        Color hpcolor = Color.Green; // valor inicial
+
+        UpdateHealthColor(currentHealth, maxVital, ref hpcolor);
+
         if (hpBackground != null)
         {
             Graphics.DrawGameTexture(
@@ -1752,7 +1789,7 @@ public partial class Entity : IEntity
             Graphics.DrawGameTexture(
                 hpForeground,
                 new FloatRect(0, 0, hpFillWidth, hpForeground.Height),
-                new FloatRect(x - foregroundBoundingTexture.Width / 2, y - hpForeground.Height / 2, hpFillWidth, hpForeground.Height), Color.White
+                new FloatRect(x - foregroundBoundingTexture.Width / 2, y - hpForeground.Height / 2, hpFillWidth, hpForeground.Height), hpcolor
             );
         }
 
