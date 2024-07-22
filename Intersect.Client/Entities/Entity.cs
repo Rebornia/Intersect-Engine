@@ -1337,8 +1337,7 @@ public partial class Entity : IEntity
 
         // Equipment's custom paperdoll texture.
         if (SpriteAnimation is SpriteAnimations.Attack or
-            SpriteAnimations.Cast or
-            SpriteAnimations.Weapon)
+            SpriteAnimations.Cast or SpriteAnimations.Weapon or SpriteAnimations.Shoot)
         {
             // Extract animation name from the AnimatedTextures list.
             var animationName = Path.GetFileNameWithoutExtension(AnimatedTextures[SpriteAnimation].Name);
@@ -2033,7 +2032,7 @@ public partial class Entity : IEntity
                 case SpriteAnimations.Shoot:
                 case SpriteAnimations.Weapon:
                 default:
-                    SpriteFrame = (int)Math.Floor((timeInAttack / (CalculateAttackTime() / (float)SpriteFrames)));
+                    SpriteFrame = (int)Math.Floor(timeInAttack / (CalculateAttackTime() / (float)SpriteFrames));
                     break;
             }
         }
@@ -2062,7 +2061,7 @@ public partial class Entity : IEntity
                     }
                 }
 
-                SpriteFrame = (int)Math.Floor((timeInCast / (duration / (float)SpriteFrames)));
+                SpriteFrame = (int)Math.Floor(timeInCast / (duration / (float)SpriteFrames));
             }
 
             LastActionTime = timingMilliseconds;
@@ -2112,14 +2111,17 @@ public partial class Entity : IEntity
     protected virtual void LoadAnimationTexture(string textureName, SpriteAnimations spriteAnimation)
     {
         SpriteAnimations spriteAnimationOveride = spriteAnimation;
-        string? textureOverride = default;
+        var textureOverride = string.Empty;
+        var weaponId = Equipment[Options.WeaponIndex];
 
         switch (spriteAnimation)
         {
-            // No override for this
-            case SpriteAnimations.Normal: break;
+            // No override for these animations.
+            case SpriteAnimations.Normal:
+            case SpriteAnimations.Idle:
 
-            case SpriteAnimations.Idle: break;
+                break;
+
             case SpriteAnimations.Attack:
                 if (this is Player player && ClassBase.TryGet(player.Class, out var classDescriptor))
                 {
@@ -2129,22 +2131,19 @@ public partial class Entity : IEntity
                 break;
 
             case SpriteAnimations.Shoot:
+                if (Equipment.Length <= Options.WeaponIndex)
                 {
-                    if (Equipment.Length <= Options.WeaponIndex)
-                    {
-                        break;
-                    }
+                    break;
+                }
 
-                    var weaponId = Equipment[Options.WeaponIndex];
-                    if (ItemBase.TryGet(weaponId, out var itemDescriptor))
-                    {
-                        textureOverride = itemDescriptor.WeaponSpriteOverride;
-                    }
+                if (ItemBase.TryGet(weaponId, out var shootItemDescriptor))
+                {
+                    textureOverride = shootItemDescriptor.WeaponSpriteOverride;
+                }
 
-                    if (!string.IsNullOrWhiteSpace(textureOverride))
-                    {
-                        spriteAnimationOveride = SpriteAnimations.Weapon;
-                    }
+                if (!string.IsNullOrWhiteSpace(textureOverride))
+                {
+                    spriteAnimationOveride = SpriteAnimations.Shoot;
                 }
 
                 break;
@@ -2155,20 +2154,27 @@ public partial class Entity : IEntity
                     textureOverride = spellDescriptor.CastSpriteOverride;
                 }
 
+                if (!string.IsNullOrWhiteSpace(textureOverride))
+                {
+                    spriteAnimationOveride = SpriteAnimations.Cast;
+                }
+
                 break;
 
             case SpriteAnimations.Weapon:
+                if (Equipment.Length <= Options.WeaponIndex)
                 {
-                    if (Equipment.Length <= Options.WeaponIndex)
-                    {
-                        break;
-                    }
+                    break;
+                }
 
-                    var weaponId = Equipment[Options.WeaponIndex];
-                    if (ItemBase.TryGet(weaponId, out var itemDescriptor))
-                    {
-                        textureOverride = itemDescriptor.WeaponSpriteOverride;
-                    }
+                if (ItemBase.TryGet(weaponId, out var weaponItemDescriptor))
+                {
+                    textureOverride = weaponItemDescriptor.WeaponSpriteOverride;
+                }
+
+                if (!string.IsNullOrWhiteSpace(textureOverride))
+                {
+                    spriteAnimationOveride = SpriteAnimations.Weapon;
                 }
 
                 break;
@@ -2177,7 +2183,7 @@ public partial class Entity : IEntity
                 throw new ArgumentOutOfRangeException(nameof(spriteAnimation));
         }
 
-        if (!string.IsNullOrEmpty(textureOverride) && TryGetAnimationTexture(textureName, spriteAnimationOveride, textureOverride, out var texture))
+        if (TryGetAnimationTexture(textureName, spriteAnimationOveride, textureOverride, out var texture))
         {
             AnimatedTextures[spriteAnimation] = texture;
         }

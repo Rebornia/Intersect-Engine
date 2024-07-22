@@ -384,7 +384,7 @@ public partial class Player : Entity
                 var onlineFriend = Player.FindOnline(friend.Key);
                 if (onlineFriend != null)
                 {
-                    PacketSender.SendChatMsg(onlineFriend, Strings.Friends.LoggedIn.ToString(Name), ChatMessageType.Friend, CustomColors.Alerts.Info, Name);
+                    PacketSender.SendChatMsg(onlineFriend, Strings.Friends.FriendLoggedIn.ToString(Name), ChatMessageType.Friend, CustomColors.Alerts.Info, Name);
                 }
             }
         }
@@ -505,6 +505,7 @@ public partial class Player : Entity
         RemoveStaleSpellCooldowns();
 
         PacketSender.SendEntityLeave(this);
+
 
 
         // Remove this player from the online list
@@ -1211,15 +1212,15 @@ public partial class Player : Entity
                     if (TryTeachSpell(spellInstance, true))
                     {
                         messages.Add(
-                            Strings.Player.spelltaughtlevelup.ToString(SpellBase.GetName(spellInstance.SpellId))
+                            Strings.Player.SpellTaughtLevelUp.ToString(SpellBase.GetName(spellInstance.SpellId))
                         );
                     }
                 }
             }
         }
 
-        PacketSender.SendChatMsg(this, Strings.Player.levelup.ToString(Level), ChatMessageType.Experience, CustomColors.Combat.LevelUp, Name);
-        PacketSender.SendActionMsg(this, Strings.Combat.levelup, CustomColors.Combat.LevelUp);
+        PacketSender.SendChatMsg(this, Strings.Player.LevelUp.ToString(Level), ChatMessageType.Experience, CustomColors.Combat.LevelUp, Name);
+        PacketSender.SendActionMsg(this, Strings.Combat.LevelUp, CustomColors.Combat.LevelUp);
         foreach (var message in messages)
         {
             PacketSender.SendChatMsg(this, message, ChatMessageType.Experience, CustomColors.Alerts.Info, Name);
@@ -1228,7 +1229,7 @@ public partial class Player : Entity
         if (StatPoints > 0)
         {
             PacketSender.SendChatMsg(
-                this, Strings.Player.statpoints.ToString(StatPoints), ChatMessageType.Experience, CustomColors.Combat.StatPoints, Name
+                this, Strings.Player.StatPoints.ToString(StatPoints), ChatMessageType.Experience, CustomColors.Combat.StatPoints, Name
             );
         }
 
@@ -1490,7 +1491,7 @@ public partial class Player : Entity
                                 PacketSender.SendQuestsProgress(this);
                                 PacketSender.SendChatMsg(
                                     this,
-                                    Strings.Quests.npctask.ToString(
+                                    Strings.Quests.NpcTask.ToString(
                                         quest.Name, questProgress.TaskProgress, questTask.Quantity,
                                         NpcBase.GetName(questTask.TargetId)
                                     ),
@@ -1544,7 +1545,7 @@ public partial class Player : Entity
                 }
                 else
                 {
-                    PacketSender.SendChatMsg(this, Strings.Combat.resourcereqs, ChatMessageType.Error);
+                    PacketSender.SendChatMsg(this, Strings.Combat.ResourceRequirements, ChatMessageType.Error);
                 }
 
                 return;
@@ -1555,7 +1556,7 @@ public partial class Player : Entity
                 if (parentItem == null || descriptor.Tool != parentItem.Tool)
                 {
                     PacketSender.SendChatMsg(
-                        this, Strings.Combat.toolrequired.ToString(Options.ToolTypes[descriptor.Tool]), ChatMessageType.Error
+                        this, Strings.Combat.ToolRequired.ToString(Options.ToolTypes[descriptor.Tool]), ChatMessageType.Error
                     );
 
                     return;
@@ -1635,7 +1636,7 @@ public partial class Player : Entity
 
         if (Target != target)
         {
-            PacketSender.SendActionMsg(this, Strings.Combat.miss, CustomColors.Combat.Missed);
+            PacketSender.SendActionMsg(this, Strings.Combat.Miss, CustomColors.Combat.Missed);
             return false;
         }
 
@@ -1648,7 +1649,7 @@ public partial class Player : Entity
         {
             if (Options.Combat.EnableCombatChatMessages)
             {
-                PacketSender.SendChatMsg(this, Strings.Combat.channelingnoattack, ChatMessageType.Combat);
+                PacketSender.SendChatMsg(this, Strings.Combat.ChannelingNoAttack, ChatMessageType.Combat);
             }
 
             return;
@@ -1691,7 +1692,7 @@ public partial class Player : Entity
                 }
                 else
                 {
-                    PacketSender.SendChatMsg(this, Strings.Combat.resourcereqs, ChatMessageType.Error);
+                    PacketSender.SendChatMsg(this, Strings.Combat.ResourceRequirements, ChatMessageType.Error);
                 }
 
                 return;
@@ -1702,7 +1703,7 @@ public partial class Player : Entity
                 if (weapon == null || descriptor.Tool != weapon.Tool)
                 {
                     PacketSender.SendChatMsg(
-                        this, Strings.Combat.toolrequired.ToString(Options.ToolTypes[descriptor.Tool]), ChatMessageType.Error
+                        this, Strings.Combat.ToolRequired.ToString(Options.ToolTypes[descriptor.Tool]), ChatMessageType.Error
                     );
 
                     return;
@@ -3207,7 +3208,7 @@ public partial class Player : Entity
 
         if (Equipment?.Any(equipmentSlotIndex => equipmentSlotIndex == slotIndex) ?? false)
         {
-            PacketSender.SendChatMsg(this, Strings.Items.equipped, ChatMessageType.Inventory, CustomColors.Items.Bound);
+            PacketSender.SendChatMsg(this, Strings.Items.Equipped, ChatMessageType.Inventory, CustomColors.Items.Bound);
             return false;
         }
 
@@ -3219,13 +3220,13 @@ public partial class Player : Entity
 
         if (!itemDescriptor.CanDrop)
         {
-            PacketSender.SendChatMsg(this, Strings.Items.bound, ChatMessageType.Inventory, CustomColors.Items.Bound);
+            PacketSender.SendChatMsg(this, Strings.Items.Bound, ChatMessageType.Inventory, CustomColors.Items.Bound);
             return false;
         }
 
         if (itemInSlot.TryGetBag(out var bag) && !bag.IsEmpty)
         {
-            PacketSender.SendChatMsg(this, Strings.Bags.dropnotempty, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Bags.DropNotEmpty, ChatMessageType.Inventory, CustomColors.Alerts.Error);
             return false;
         }
 
@@ -3298,14 +3299,14 @@ public partial class Player : Entity
             {
                 if (status.Type == SpellEffect.Stun)
                 {
-                    PacketSender.SendChatMsg(this, Strings.Items.stunned, ChatMessageType.Error);
+                    PacketSender.SendChatMsg(this, Strings.Items.Stunned, ChatMessageType.Error);
 
                     return;
                 }
 
                 if (status.Type == SpellEffect.Sleep)
                 {
-                    PacketSender.SendChatMsg(this, Strings.Items.sleep, ChatMessageType.Error);
+                    PacketSender.SendChatMsg(this, Strings.Items.Sleep, ChatMessageType.Error);
 
                     return;
                 }
@@ -3327,7 +3328,7 @@ public partial class Player : Entity
                 }
                 else
                 {
-                    PacketSender.SendChatMsg(this, Strings.Items.dynamicreq, ChatMessageType.Error);
+                    PacketSender.SendChatMsg(this, Strings.Items.DynamicRequirement, ChatMessageType.Error);
                 }
 
                 return;
@@ -3337,7 +3338,7 @@ public partial class Player : Entity
             if (!itemBase.IgnoreGlobalCooldown && mGlobalCooldownTimer > Timing.Global.MillisecondsUtc)
             {
                 //Cooldown warning!
-                PacketSender.SendChatMsg(this, Strings.Items.cooldown, ChatMessageType.Error);
+                PacketSender.SendChatMsg(this, Strings.Items.Cooldown, ChatMessageType.Error);
 
                 return;
             }
@@ -3345,7 +3346,7 @@ public partial class Player : Entity
             if (ItemCooldowns.ContainsKey(itemBase.Id) && ItemCooldowns[itemBase.Id] > Timing.Global.MillisecondsUtc)
             {
                 //Cooldown warning!
-                PacketSender.SendChatMsg(this, Strings.Items.cooldown, ChatMessageType.Error);
+                PacketSender.SendChatMsg(this, Strings.Items.Cooldown, ChatMessageType.Error);
 
                 return;
             }
@@ -3362,7 +3363,7 @@ public partial class Player : Entity
                     }
                     else
                     {
-                        PacketSender.SendChatMsg(this, Strings.Items.cannotuse, ChatMessageType.Error);
+                        PacketSender.SendChatMsg(this, Strings.Items.CannotUse, ChatMessageType.Error);
                     }
 
                     return;
@@ -3414,7 +3415,7 @@ public partial class Player : Entity
                             throw new IndexOutOfRangeException();
                     }
 
-                    var symbol = value < 0 ? Strings.Combat.removesymbol : Strings.Combat.addsymbol;
+                    var symbol = value < 0 ? Strings.Combat.RemoveSymbol : Strings.Combat.AddSymbol;
                     var number = $"{symbol}{Math.Abs(value)}";
                     PacketSender.SendActionMsg(this, number, color);
 
@@ -3496,7 +3497,7 @@ public partial class Player : Entity
 
                     break;
                 default:
-                    PacketSender.SendChatMsg(this, Strings.Items.notimplemented, ChatMessageType.Error);
+                    PacketSender.SendChatMsg(this, Strings.Items.NotImplemented, ChatMessageType.Error);
 
                     return;
             }
@@ -3905,7 +3906,7 @@ public partial class Player : Entity
             {
                 if (!itemDescriptor.CanSell)
                 {
-                    PacketSender.SendChatMsg(this, Strings.Shops.bound, ChatMessageType.Inventory, CustomColors.Items.Bound);
+                    PacketSender.SendChatMsg(this, Strings.Shops.Bound, ChatMessageType.Inventory, CustomColors.Items.Bound);
 
                     return;
                 }
@@ -3917,7 +3918,7 @@ public partial class Player : Entity
                     {
                         if (!bag.IsEmpty)
                         {
-                            PacketSender.SendChatMsg(this, Strings.Bags.onlysellempty, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+                            PacketSender.SendChatMsg(this, Strings.Bags.OnlySellEmpty, ChatMessageType.Inventory, CustomColors.Alerts.Error);
                             return;
                         }
                     }
@@ -3929,7 +3930,7 @@ public partial class Player : Entity
                     {
                         if (!shop.BuyingWhitelist)
                         {
-                            PacketSender.SendChatMsg(this, Strings.Shops.doesnotaccept, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+                            PacketSender.SendChatMsg(this, Strings.Shops.DoesNotAccept, ChatMessageType.Inventory, CustomColors.Alerts.Error);
 
                             return;
                         }
@@ -3947,7 +3948,7 @@ public partial class Player : Entity
                 {
                     if (shop.BuyingWhitelist)
                     {
-                        PacketSender.SendChatMsg(this, Strings.Shops.doesnotaccept, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+                        PacketSender.SendChatMsg(this, Strings.Shops.DoesNotAccept, ChatMessageType.Inventory, CustomColors.Alerts.Error);
 
                         return;
                     }
@@ -4048,13 +4049,13 @@ public partial class Player : Entity
         var itemCostTotal = boughtItem.CostItemQuantity * boughtItemAmount;
         if (currencyAmount < itemCostTotal)
         {
-            PacketSender.SendChatMsg(this, Strings.Shops.cantafford, ChatMessageType.Inventory, CustomColors.Alerts.Error, Name);
+            PacketSender.SendChatMsg(this, Strings.Shops.CannotAfford, ChatMessageType.Inventory, CustomColors.Alerts.Error, Name);
             return;
         }
 
         if (!CanGiveItem(boughtItemBase.Id, boughtItemAmount))
         {
-            PacketSender.SendChatMsg(this, Strings.Shops.inventoryfull, ChatMessageType.Inventory, CustomColors.Alerts.Error, Name);
+            PacketSender.SendChatMsg(this, Strings.Shops.InventoryFull, ChatMessageType.Inventory, CustomColors.Alerts.Error, Name);
             return;
         }
 
@@ -4072,7 +4073,7 @@ public partial class Player : Entity
                 if (!TryTakeItem(itemSlot, quantityToRemove))
                 {
                     success = false;
-                    Log.Warn(Strings.Shops.FailedRemovedItem.ToString(itemSlot, Id, quantityToRemove, "BuyItem(int slot, int amount)"));
+                    Log.Warn(Strings.Shops.FailedToRemoveItem.ToString(itemSlot, Id, quantityToRemove, "BuyItem(int slot, int amount)"));
                     break;
                 }
 
@@ -4231,7 +4232,7 @@ public partial class Player : Entity
                 if (TryGiveItem(craftItem.Id, quantity))
                 {
                     PacketSender.SendChatMsg(
-                        this, Strings.Crafting.crafted.ToString(craftItem.Name), ChatMessageType.Crafting,
+                        this, Strings.Crafting.Crafted.ToString(craftItem.Name), ChatMessageType.Crafting,
                         CustomColors.Alerts.Success
                     );
 
@@ -4249,7 +4250,7 @@ public partial class Player : Entity
 
                     PacketSender.SendInventory(this);
                     PacketSender.SendChatMsg(
-                        this, Strings.Crafting.nospace.ToString(craftItem.Name), ChatMessageType.Crafting,
+                        this, Strings.Crafting.NoSpace.ToString(craftItem.Name), ChatMessageType.Crafting,
                         CustomColors.Alerts.Error
                     );
                 }
@@ -4639,20 +4640,20 @@ public partial class Player : Entity
 
         if (!itemDescriptor.CanBag)
         {
-            PacketSender.SendChatMsg(this, Strings.Items.nobag, ChatMessageType.Inventory, CustomColors.Items.Bound);
+            PacketSender.SendChatMsg(this, Strings.Items.NoBag, ChatMessageType.Inventory, CustomColors.Items.Bound);
             return;
         }
 
         // Make Sure we are not Storing a Bag inside of itself
         if (inventorySlot.Bag == InBag)
         {
-            PacketSender.SendChatMsg(this, Strings.Bags.baginself, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Bags.BagInSelf, ChatMessageType.Inventory, CustomColors.Alerts.Error);
             return;
         }
 
         if (itemDescriptor.ItemType == ItemType.Bag)
         {
-            PacketSender.SendChatMsg(this, Strings.Bags.baginbag, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Bags.BagInBag, ChatMessageType.Inventory, CustomColors.Alerts.Error);
             return;
         }
 
@@ -4702,7 +4703,7 @@ public partial class Player : Entity
         if (!TryFillBagStacksOfItemFromInventorySlot(bag, inventorySlotIndex, relevantSlots, itemDescriptor, amount))
         {
             // If we're STILL not done, alert the user that we didn't have enough slots
-            PacketSender.SendChatMsg(this, Strings.Bags.bagnospace, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Items.NoSpaceForItem, ChatMessageType.Inventory, CustomColors.Alerts.Error);
         }
     }
 
@@ -4771,7 +4772,7 @@ public partial class Player : Entity
         if (!TryFillInventoryStacksOfItemFromBagSlot(bag, slot, relevantSlots, itemBase, amount))
         {
             // If we're STILL not done, alert the user that we didn't have enough slots
-            PacketSender.SendChatMsg(this, Strings.Bags.withdrawinvalid, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Bags.WithdrawInvalid, ChatMessageType.Inventory, CustomColors.Alerts.Error);
         }
     }
 
@@ -4825,12 +4826,12 @@ public partial class Player : Entity
             {
                 FriendRequester = fromPlayer;
                 PacketSender.SendFriendRequest(this, fromPlayer);
-                PacketSender.SendChatMsg(fromPlayer, Strings.Friends.sent, ChatMessageType.Friend, CustomColors.Alerts.RequestSent);
+                PacketSender.SendChatMsg(fromPlayer, Strings.Friends.FriendRequestSent, ChatMessageType.Friend, CustomColors.Alerts.RequestSent);
             }
             else
             {
                 PacketSender.SendChatMsg(
-                    fromPlayer, Strings.Friends.busy.ToString(Name), ChatMessageType.Friend, CustomColors.Alerts.Error
+                    fromPlayer, Strings.Friends.Busy.ToString(Name), ChatMessageType.Friend, CustomColors.Alerts.Error
                 );
             }
         }
@@ -4871,7 +4872,7 @@ public partial class Player : Entity
 
         if (Trading.Requests.ContainsKey(fromPlayer) && Trading.Requests[fromPlayer] > Timing.Global.Milliseconds)
         {
-            PacketSender.SendChatMsg(fromPlayer, Strings.Trading.alreadydenied, ChatMessageType.Trading, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(fromPlayer, Strings.Trading.AlreadyDenied, ChatMessageType.Trading, CustomColors.Alerts.Error);
         }
         else
         {
@@ -4883,7 +4884,7 @@ public partial class Player : Entity
             else
             {
                 PacketSender.SendChatMsg(
-                    fromPlayer, Strings.Trading.busy.ToString(Name), ChatMessageType.Trading, CustomColors.Alerts.Error
+                    fromPlayer, Strings.Trading.Busy.ToString(Name), ChatMessageType.Trading, CustomColors.Alerts.Error
                 );
             }
         }
@@ -4917,7 +4918,7 @@ public partial class Player : Entity
                 //Check if the item is bound.. if so don't allow trade
                 if (!itemBase.CanTrade)
                 {
-                    PacketSender.SendChatMsg(this, Strings.Bags.tradebound, ChatMessageType.Trading, CustomColors.Items.Bound);
+                    PacketSender.SendChatMsg(this, Strings.Trading.Bound, ChatMessageType.Trading, CustomColors.Items.Bound);
 
                     return;
                 }
@@ -4929,7 +4930,7 @@ public partial class Player : Entity
                     {
                         if (!bag.IsEmpty)
                         {
-                            PacketSender.SendChatMsg(this, Strings.Bags.onlytradeempty, ChatMessageType.Trading, CustomColors.Alerts.Error);
+                            PacketSender.SendChatMsg(this, Strings.Bags.OnlyTradeEmpty, ChatMessageType.Trading, CustomColors.Alerts.Error);
                             return;
                         }
                     }
@@ -4992,11 +4993,11 @@ public partial class Player : Entity
                     }
                 }
 
-                PacketSender.SendChatMsg(this, Strings.Trading.tradenospace, ChatMessageType.Trading, CustomColors.Alerts.Error);
+                PacketSender.SendChatMsg(this, Strings.Items.NoSpaceForItem, ChatMessageType.Trading, CustomColors.Alerts.Error);
             }
             else
             {
-                PacketSender.SendChatMsg(this, Strings.Trading.offerinvalid, ChatMessageType.Trading, CustomColors.Alerts.Error);
+                PacketSender.SendChatMsg(this, Strings.Trading.InvalidOffer, ChatMessageType.Trading, CustomColors.Alerts.Error);
             }
         }
     }
@@ -5021,7 +5022,7 @@ public partial class Player : Entity
 
         if (Trading.Offer[slot] == null || Trading.Offer[slot].ItemId == Guid.Empty)
         {
-            PacketSender.SendChatMsg(this, Strings.Trading.revokeinvalid, ChatMessageType.Trading, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Trading.InvalidRevoke, ChatMessageType.Trading, CustomColors.Alerts.Error);
 
             return;
         }
@@ -5066,7 +5067,7 @@ public partial class Player : Entity
         if (!TryFillInventoryStacksOfItemForTradeOffer(tradeItem, slot, relevantSlots, itemBase, amount))
         {
             // If we're STILL not done, alert the user that we didn't have enough slots
-            PacketSender.SendChatMsg(this, Strings.Bags.withdrawinvalid, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Bags.WithdrawInvalid, ChatMessageType.Inventory, CustomColors.Alerts.Error);
         }
     }
 
@@ -5087,7 +5088,7 @@ public partial class Player : Entity
             if (!TryGiveItem(offer, -1) && MapController.TryGetInstanceFromMap(MapId, MapInstanceId, out var instance))
             {
                 instance.SpawnItem(X, Y, offer, offer.Quantity, Id);
-                PacketSender.SendChatMsg(this, Strings.Trading.itemsdropped, ChatMessageType.Inventory, CustomColors.Alerts.Error);
+                PacketSender.SendChatMsg(this, Strings.Trading.ItemsDropped, ChatMessageType.Inventory, CustomColors.Alerts.Error);
             }
 
             offer.ItemId = Guid.Empty;
@@ -5105,12 +5106,12 @@ public partial class Player : Entity
         }
 
         Trading.Counterparty.ReturnTradeItems();
-        PacketSender.SendChatMsg(Trading.Counterparty, Strings.Trading.declined, ChatMessageType.Trading, CustomColors.Alerts.Error);
+        PacketSender.SendChatMsg(Trading.Counterparty, Strings.Trading.Declined, ChatMessageType.Trading, CustomColors.Alerts.Error);
         PacketSender.SendTradeClose(Trading.Counterparty);
         Trading.Counterparty.Trading.Counterparty = null;
 
         ReturnTradeItems();
-        PacketSender.SendChatMsg(this, Strings.Trading.declined, ChatMessageType.Trading, CustomColors.Alerts.Error);
+        PacketSender.SendChatMsg(this, Strings.Trading.Declined, ChatMessageType.Trading, CustomColors.Alerts.Error);
         PacketSender.SendTradeClose(this);
         Trading.Counterparty = null;
     }
@@ -5125,7 +5126,7 @@ public partial class Player : Entity
 
         if (Party.Count != 0)
         {
-            PacketSender.SendChatMsg(fromPlayer, Strings.Parties.inparty.ToString(Name), ChatMessageType.Party, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(fromPlayer, Strings.Parties.InParty.ToString(Name), ChatMessageType.Party, CustomColors.Alerts.Error);
 
             return;
         }
@@ -5144,7 +5145,7 @@ public partial class Player : Entity
 
         if (PartyRequests.ContainsKey(fromPlayer) && PartyRequests[fromPlayer] > Timing.Global.Milliseconds)
         {
-            PacketSender.SendChatMsg(fromPlayer, Strings.Parties.alreadydenied, ChatMessageType.Party, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(fromPlayer, Strings.Parties.AlreadyDenied, ChatMessageType.Party, CustomColors.Alerts.Error);
         }
         else
         {
@@ -5156,7 +5157,7 @@ public partial class Player : Entity
             else
             {
                 PacketSender.SendChatMsg(
-                    fromPlayer, Strings.Parties.busy.ToString(Name), ChatMessageType.Party, CustomColors.Alerts.Error
+                    fromPlayer, Strings.Parties.Busy.ToString(Name), ChatMessageType.Party, CustomColors.Alerts.Error
                 );
             }
         }
@@ -5173,7 +5174,7 @@ public partial class Player : Entity
         {
             if (PartyLeader != this)
             {
-                PacketSender.SendChatMsg(this, Strings.Parties.leaderinvonly, ChatMessageType.Party, CustomColors.Alerts.Error);
+                PacketSender.SendChatMsg(this, Strings.Parties.LeaderInviteOnly, ChatMessageType.Party, CustomColors.Alerts.Error);
 
                 return false;
             }
@@ -5190,7 +5191,7 @@ public partial class Player : Entity
 
         if (Party.Count >= Options.Party.MaximumMembers)
         {
-            PacketSender.SendChatMsg(this, Strings.Parties.limitreached, ChatMessageType.Party, CustomColors.Alerts.Error);
+            PacketSender.SendChatMsg(this, Strings.Parties.LimitReached, ChatMessageType.Party, CustomColors.Alerts.Error);
             return false;
         }
 
@@ -5204,7 +5205,7 @@ public partial class Player : Entity
             member.Party = cachedParty;
             PacketSender.SendParty(member);
             PacketSender.SendChatMsg(
-                member, Strings.Parties.joined.ToString(target.Name), ChatMessageType.Party, CustomColors.Alerts.Accepted
+                member, Strings.Parties.Joined.ToString(target.Name), ChatMessageType.Party, CustomColors.Alerts.Accepted
             );
         }
         return true;
@@ -5221,7 +5222,7 @@ public partial class Player : Entity
                 {
                     oldMember.Party = new List<Player>();
                     PacketSender.SendParty(oldMember);
-                    PacketSender.SendChatMsg(oldMember, Strings.Parties.kicked, ChatMessageType.Party, CustomColors.Alerts.Error);
+                    PacketSender.SendChatMsg(oldMember, Strings.Parties.Kicked, ChatMessageType.Party, CustomColors.Alerts.Error);
 
                     // Kick the player out of your shared instance!
                     if (Options.Instance.Instancing.KickPartyMembersOnKick && oldMember.InstanceType == MapInstanceType.Shared)
@@ -5239,7 +5240,7 @@ public partial class Player : Entity
                             Party[i].Party = Party;
                             PacketSender.SendParty(Party[i]);
                             PacketSender.SendChatMsg(
-                                Party[i], Strings.Parties.memberkicked.ToString(oldMember.Name),
+                                Party[i], Strings.Parties.MemberKicked.ToString(oldMember.Name),
                                 ChatMessageType.Party,
                                 CustomColors.Alerts.Error
                             );
@@ -5250,7 +5251,7 @@ public partial class Player : Entity
                         var remainder = Party[0];
                         remainder.Party.Clear();
                         PacketSender.SendParty(remainder);
-                        PacketSender.SendChatMsg(remainder, Strings.Parties.disbanded, ChatMessageType.Party, CustomColors.Alerts.Error);
+                        PacketSender.SendChatMsg(remainder, Strings.Parties.Disbanded, ChatMessageType.Party, CustomColors.Alerts.Error);
                     }
                 }
             }
@@ -5274,8 +5275,8 @@ public partial class Player : Entity
         currentParty.Remove(this);
 
         string partyMessage = currentParty.Count > 1
-            ? Strings.Parties.memberleft.ToString(Name)
-            : Strings.Parties.disbanded;
+            ? Strings.Parties.MemberLeft.ToString(Name)
+            : Strings.Parties.Disbanded;
 
         // Update all members of the party with the new list
         foreach (var partyMember in currentParty)
@@ -5292,7 +5293,7 @@ public partial class Player : Entity
 
         Party = new List<Player>();
         PacketSender.SendParty(this);
-        PacketSender.SendChatMsg(this, Strings.Parties.left, ChatMessageType.Party, CustomColors.Alerts.Error);
+        PacketSender.SendChatMsg(this, Strings.Parties.Left, ChatMessageType.Party, CustomColors.Alerts.Error);
     }
 
     public bool InParty(Player member)
@@ -5353,7 +5354,7 @@ public partial class Player : Entity
                 {
                     PacketSender.SendPlayerSpellUpdate(this, i);
                     PacketSender.SendChatMsg(this,
-                        Strings.Player.spelltaughtlevelup.ToString(SpellBase.GetName(spell.SpellId)),
+                        Strings.Player.SpellTaughtLevelUp.ToString(SpellBase.GetName(spell.SpellId)),
                         ChatMessageType.Experience, CustomColors.Alerts.Info, Name);
                 }
 
@@ -5409,7 +5410,7 @@ public partial class Player : Entity
         }
         else
         {
-            PacketSender.SendChatMsg(this, Strings.Combat.tryforgetboundspell, ChatMessageType.Spells);
+            PacketSender.SendChatMsg(this, Strings.Combat.TryForgetBoundSpell, ChatMessageType.Spells);
         }
     }
 
@@ -5446,7 +5447,7 @@ public partial class Player : Entity
 
         if (spellBase.Bound)
         {
-            PacketSender.SendChatMsg(this, Strings.Combat.tryforgetboundspell, ChatMessageType.Spells);
+            PacketSender.SendChatMsg(this, Strings.Combat.TryForgetBoundSpell, ChatMessageType.Spells);
 
             return false;
         }
@@ -5502,31 +5503,31 @@ public partial class Player : Entity
                 switch (reason)
                 {
                     case SpellCastFailureReason.InsufficientMP:
-                        PacketSender.SendChatMsg(this, Strings.Combat.lowmana, ChatMessageType.Combat);
+                        PacketSender.SendChatMsg(this, Strings.Combat.LowMana, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.InsufficientHP:
-                        PacketSender.SendChatMsg(this, Strings.Combat.lowhealth, ChatMessageType.Combat);
+                        PacketSender.SendChatMsg(this, Strings.Combat.LowHealth, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.InvalidTarget:
                         PacketSender.SendChatMsg(this, Strings.Combat.InvalidTarget, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.Silenced:
-                        PacketSender.SendChatMsg(this, Strings.Combat.silenced, ChatMessageType.Combat);
+                        PacketSender.SendChatMsg(this, Strings.Combat.Silenced, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.Stunned:
-                        PacketSender.SendChatMsg(this, Strings.Combat.stunned, ChatMessageType.Combat);
+                        PacketSender.SendChatMsg(this, Strings.Combat.Stunned, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.Asleep:
-                        PacketSender.SendChatMsg(this, Strings.Combat.sleep, ChatMessageType.Combat);
+                        PacketSender.SendChatMsg(this, Strings.Combat.Sleep, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.Snared:
                         PacketSender.SendChatMsg(this, Strings.Combat.Snared, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.OutOfRange:
-                        PacketSender.SendChatMsg(this, Strings.Combat.targetoutsiderange, ChatMessageType.Combat);
+                        PacketSender.SendChatMsg(this, Strings.Combat.TargetOutOfRange, ChatMessageType.Combat);
                         break;
                     case SpellCastFailureReason.OnCooldown:
-                        PacketSender.SendChatMsg(this, Strings.Combat.cooldown, ChatMessageType.Combat);
+                        PacketSender.SendChatMsg(this, Strings.Combat.Cooldown, ChatMessageType.Combat);
                         break;
                 }
             }
@@ -5537,7 +5538,7 @@ public partial class Player : Entity
         if (!spell.IgnoreGlobalCooldown && mGlobalCooldownTimer > Timing.Global.MillisecondsUtc)
         {
             // Notify our user!
-            PacketSender.SendChatMsg(this, Strings.Combat.cooldown, ChatMessageType.Combat);
+            PacketSender.SendChatMsg(this, Strings.Combat.Cooldown, ChatMessageType.Combat);
             return false;
         }
 
@@ -5550,7 +5551,7 @@ public partial class Player : Entity
             }
             else
             {
-                PacketSender.SendChatMsg(this, Strings.Combat.dynamicreq, ChatMessageType.Spells);
+                PacketSender.SendChatMsg(this, Strings.Combat.DynamicRequirement, ChatMessageType.Spells);
             }
 
             reason = SpellCastFailureReason.ConditionsNotMet;
@@ -5576,7 +5577,7 @@ public partial class Player : Entity
                     if (Options.Combat.EnableCombatChatMessages)
                     {
                         PacketSender.SendChatMsg(
-                            this, Strings.Items.notenough.ToString(ItemBase.GetName(projectileBase.AmmoItemId)),
+                            this, Strings.Items.NotEnough.ToString(ItemBase.GetName(projectileBase.AmmoItemId)),
                             ChatMessageType.Inventory,
                             CustomColors.Alerts.Error
                         );
@@ -5666,7 +5667,7 @@ public partial class Player : Entity
         {
             if (Options.Combat.EnableCombatChatMessages)
             {
-                PacketSender.SendChatMsg(this, Strings.Combat.channeling, ChatMessageType.Combat);
+                PacketSender.SendChatMsg(this, Strings.Combat.Channeling, ChatMessageType.Combat);
             }
         }
     }
@@ -6209,7 +6210,7 @@ public partial class Player : Entity
 
             EnqueueStartCommonEvent(EventBase.Get(quest.StartEventId));
             PacketSender.SendChatMsg(
-                this, Strings.Quests.started.ToString(quest.Name), ChatMessageType.Quest, CustomColors.QuestAlert.Started
+                this, Strings.Quests.Started.ToString(quest.Name), ChatMessageType.Quest, CustomColors.QuestAlert.Started
             );
 
             PacketSender.SendQuestsProgress(this);
@@ -6260,7 +6261,7 @@ public partial class Player : Entity
             {
                 QuestOffers.Remove(questId);
                 PacketSender.SendChatMsg(
-                    this, Strings.Quests.declined.ToString(QuestBase.GetName(questId)), ChatMessageType.Quest, CustomColors.QuestAlert.Declined
+                    this, Strings.Quests.Declined.ToString(QuestBase.GetName(questId)), ChatMessageType.Quest, CustomColors.QuestAlert.Declined
                 );
 
                 foreach (var evt in EventLookup)
@@ -6302,7 +6303,7 @@ public partial class Player : Entity
                     questProgress.TaskId = Guid.Empty;
                     questProgress.TaskProgress = -1;
                     PacketSender.SendChatMsg(
-                        this, Strings.Quests.abandoned.ToString(QuestBase.GetName(questId)), ChatMessageType.Quest,
+                        this, Strings.Quests.Abandoned.ToString(QuestBase.GetName(questId)), ChatMessageType.Quest,
                         CustomColors.QuestAlert.Abandoned
                     );
 
@@ -6328,7 +6329,7 @@ public partial class Player : Entity
                     {
                         if (quest.Tasks[i].Id == taskId)
                         {
-                            PacketSender.SendChatMsg(this, Strings.Quests.taskcompleted, ChatMessageType.Quest);
+                            PacketSender.SendChatMsg(this, Strings.Quests.TaskCompleted, ChatMessageType.Quest);
                             if (i == quest.Tasks.Count - 1)
                             {
                                 //Complete Quest
@@ -6342,7 +6343,7 @@ public partial class Player : Entity
 
                                 EnqueueStartCommonEvent(EventBase.Get(quest.EndEventId));
                                 PacketSender.SendChatMsg(
-                                    this, Strings.Quests.completed.ToString(quest.Name), ChatMessageType.Quest,
+                                    this, Strings.Quests.Completed.ToString(quest.Name), ChatMessageType.Quest,
                                     CustomColors.QuestAlert.Completed
                                 );
                             }
@@ -6362,7 +6363,7 @@ public partial class Player : Entity
                                 }
 
                                 PacketSender.SendChatMsg(
-                                    this, Strings.Quests.updated.ToString(quest.Name),
+                                    this, Strings.Quests.Updated.ToString(quest.Name),
                                     ChatMessageType.Quest,
                                     CustomColors.QuestAlert.TaskUpdated
                                 );
@@ -6393,7 +6394,7 @@ public partial class Player : Entity
                 {
                     EnqueueStartCommonEvent(EventBase.Get(quest.EndEventId));
                     PacketSender.SendChatMsg(
-                        this, Strings.Quests.completed.ToString(quest.Name), ChatMessageType.Quest,
+                        this, Strings.Quests.Completed.ToString(quest.Name), ChatMessageType.Quest,
                         CustomColors.QuestAlert.Completed
                     );
                 }
@@ -6433,7 +6434,7 @@ public partial class Player : Entity
                                     PacketSender.SendQuestsProgress(this);
                                     PacketSender.SendChatMsg(
                                         this,
-                                        Strings.Quests.itemtask.ToString(
+                                        Strings.Quests.ItemTask.ToString(
                                             quest.Name, questProgress.TaskProgress, questTask.Quantity,
                                             ItemBase.GetName(questTask.TargetId)
                                         ),
@@ -7565,7 +7566,7 @@ public partial class Player : Entity
     public bool TryChangeName(string newName)
     {
         // Is the name available?
-        if (!FieldChecking.IsValidUsername(newName, Strings.Regex.username))
+        if (!FieldChecking.IsValidUsername(newName, Strings.Regex.Username))
         {
             return false;
         }
