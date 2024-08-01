@@ -11,6 +11,9 @@ using Intersect.Client.Maps;
 using Intersect.Enums;
 using Intersect.GameObjects;
 using Intersect.GameObjects.Maps;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Intersect.Client.Interface.Game.Map
 {
@@ -438,10 +441,35 @@ namespace Intersect.Client.Interface.Game.Map
             var minimapColorOptions = minimapOptions.MinimapColors;
             var minimapImageOptions = minimapOptions.MinimapImages;
 
+            if (entities == null)
+            {
+                Console.WriteLine("entities is null in GenerateEntityInfo.");
+                return entityInfo;
+            }
+
+            if (player == null)
+            {
+                Console.WriteLine("player is null in GenerateEntityInfo.");
+                return entityInfo;
+            }
+
             foreach (var entity in entities.Values)
             {
+                if (entity == null)
+                {
+                    Console.WriteLine("entity is null in GenerateEntityInfo.");
+                    continue;
+                }
+
+                if (entity.MapInstance == null)
+                {
+                    Console.WriteLine($"entity.MapInstance is null for entity ID {entity.Id}");
+                    continue;
+                }
+
                 if (!_mapPosition.TryGetValue(entity.MapInstance.Id, out var map))
                 {
+                    Console.WriteLine($"Map position not found for entity ID {entity.Id}");
                     continue;
                 }
 
@@ -484,7 +512,6 @@ namespace Intersect.Client.Interface.Game.Map
                     case EntityType.Event:
                         color = Color.Transparent;
                         texture = minimapImageOptions.Event;
-
                         break;
 
                     case EntityType.GlobalEntity:
@@ -502,7 +529,7 @@ namespace Intersect.Client.Interface.Game.Map
 
                     case EntityType.Resource:
                         // This relies on users configuring it PROPERLY.
-                        var tool = ((Resource)entity).BaseResource.Tool;
+                        var tool = ((Resource)entity).BaseResource?.Tool ?? -1;
                         var texSet = false;
                         var colSet = false;
 
@@ -555,7 +582,6 @@ namespace Intersect.Client.Interface.Game.Map
                         texture = minimapImageOptions.Default;
                         break;
                 }
-
 
                 // Add this to our location dictionary!
                 if (!entityInfo.TryGetValue(map, out var locationDictionary))
