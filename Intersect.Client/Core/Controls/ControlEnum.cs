@@ -78,6 +78,8 @@ public enum Control
 
     OpenFriends,
 
+    OpenMinimap,
+
     OpenSettings,
 
     OpenDebugger,

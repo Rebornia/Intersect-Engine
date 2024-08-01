@@ -816,6 +816,11 @@ public static partial class Strings
             {"togglezoomout", "Toggle Zoom Out:"},
             {"holdtozoomout", "Hold to Zoom Out:"},
             {"togglefullscreen", "Toggle Fullscreen:"},
+            {"openminimap", @"Open Minimap:"},
+                // {"submit", "Submit"},
+                // {"cancel", "Cancel"},
+                // {"next", "Next"},
+                // {"previous", "Previous"},
         };
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -1098,6 +1103,8 @@ public static partial class Strings
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public static LocalizedString Spells = @"Spell Book";
+
+        public static LocalizedString Minimap = @"Minimap";
     }
 
     public partial struct General
@@ -2443,6 +2450,19 @@ public static partial class Strings
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public static LocalizedString YourOffer = @"Your Offer:";
+    }
+
+    public partial struct Minimap
+    {
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public static LocalizedString Title = @"Minimap";
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public static LocalizedString ZoomIn = @"Zoom In";
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public static LocalizedString ZoomOut = @"Zoom Out";
+
     }
 
     public partial struct EscapeMenu
