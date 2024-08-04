@@ -237,7 +237,7 @@ public partial class Menu
 
     public bool ToggleGuildWindow()
     {
-        if (mGuildWindow.IsVisible())
+        if (!mGuildWindow.IsHidden)
         {
             mGuildWindow.Hide();
         }
@@ -249,7 +249,7 @@ public partial class Menu
             mGuildWindow.Show();
         }
 
-        return mGuildWindow.IsVisible();
+        return !mGuildWindow.IsHidden;
     }
 
     public void HideGuildWindow()
@@ -370,7 +370,7 @@ public partial class Menu
             windowsOpen = true;
         }
 
-        if (mGuildWindow.IsVisible())
+        if (!mGuildWindow.IsHidden)
         {
             windowsOpen = true;
         }
