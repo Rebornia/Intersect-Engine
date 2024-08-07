@@ -3070,6 +3070,7 @@ public abstract partial class Entity : IDisposable
             {
                 continue;
             }
+            var randomQuantity = Randomization.Next(1, drop.Quantity + 1);
 
             // Spawn the actual item!
             if (MapController.TryGetInstanceFromMap(MapId, MapInstanceId, out var instance))
