@@ -1493,15 +1493,14 @@ public partial class Entity : IEntity
         );
     }
 
+
     public virtual void DrawName(Color? textColor, Color? borderColor = null, Color? backgroundColor = null)
     {
-        // Are we really supposed to draw this name?
         if (!ShouldDrawName || Graphics.Renderer == default)
         {
             return;
         }
 
-        //Check for npc colors
         if (textColor == null)
         {
             var color = Aggression switch
@@ -1532,15 +1531,99 @@ public partial class Entity : IEntity
         }
 
         var name = Name;
-        if ((this is Player && Options.Player.ShowLevelByName) || (Type == EntityType.GlobalEntity && Options.Npc.ShowLevelByName))
+        bool isBoss = name.Contains("(BOSS)");
+        bool isInstance = name.Contains("(INS)");
+        bool isEvent = name.Contains("(EVENT)");
+
+        if (isBoss)
         {
-            name = Strings.GameWindow.EntityNameAndLevel.ToString(Name, Level);
+            name = name.Replace("(BOSS)", "").Trim(); // Remove o marcador "(BOSS)" do nome
+        }
+        else if (isInstance)
+        {
+            name = name.Replace("(INS)", "").Trim(); // Remove o marcador "(INS)" do nome
+        }
+        else if (isEvent)
+        {
+            name = name.Replace("(EVENT)", "").Trim(); // Remove o marcador "(EVENT)" do nome
         }
 
-        var textSize = Graphics.Renderer.MeasureText(name, Graphics.EntityNameFont, 1);
+        if ((this is Player && Options.Player.ShowLevelByName) || (Type == EntityType.GlobalEntity && Options.Npc.ShowLevelByName))
+        {
+            name = Strings.GameWindow.EntityNameAndLevel.ToString(name, Level);
+        }
 
         var x = (int)Math.Ceiling(Origin.X);
         var y = GetLabelLocation(LabelType.Name);
+
+        if (isBoss)
+        {
+            y -= 15;
+
+            var bossTextSize = Graphics.Renderer.MeasureText("BOSS", Graphics.EntityNameFont, 1);
+
+            // Fundo preto para BOSS
+            Graphics.DrawGameTexture(
+                Graphics.Renderer.GetWhiteTexture(), new FloatRect(0, 0, 1, 1),
+                new FloatRect(x - bossTextSize.X / 2f - 4, y - bossTextSize.Y, bossTextSize.X + 8, bossTextSize.Y), Color.Black
+            );
+
+            // Texto vermelho para BOSS
+            Color bossTextColor = Color.Red;
+
+            Graphics.Renderer.DrawString(
+                "BOSS", Graphics.EntityNameFont, x - (int)Math.Ceiling(bossTextSize.X / 2f), (int)y - bossTextSize.Y, 1,
+                bossTextColor, true, null, Color.FromArgb(borderColor.ToArgb())
+            );
+
+            y += bossTextSize.Y - 2;
+        }
+        else if (isInstance)
+        {
+            y -= 15;
+
+            var insTextSize = Graphics.Renderer.MeasureText("INSTANCE", Graphics.EntityNameFont, 1);
+
+            // Fundo amarelo para INSTANCE
+            Graphics.DrawGameTexture(
+                Graphics.Renderer.GetWhiteTexture(), new FloatRect(0, 0, 1, 1),
+                new FloatRect(x - insTextSize.X / 2f - 4, y - insTextSize.Y, insTextSize.X + 8, insTextSize.Y), Color.Yellow
+            );
+
+            // Texto ciano para INSTANCE
+            Color insTextColor = Color.Cyan;
+
+            Graphics.Renderer.DrawString(
+                "INSTANCE", Graphics.EntityNameFont, x - (int)Math.Ceiling(insTextSize.X / 2f), (int)y - insTextSize.Y, 1,
+                insTextColor, true, null, Color.FromArgb(borderColor.ToArgb())
+            );
+
+            y += insTextSize.Y - 2;
+        }
+        else if (isEvent)
+        {
+            y -= 15;
+
+            var eventTextSize = Graphics.Renderer.MeasureText("EVENT", Graphics.EntityNameFont, 1);
+
+            // Fundo cyan para EVENT
+            Graphics.DrawGameTexture(
+                Graphics.Renderer.GetWhiteTexture(), new FloatRect(0, 0, 1, 1),
+                new FloatRect(x - eventTextSize.X / 2f - 4, y - eventTextSize.Y, eventTextSize.X + 8, eventTextSize.Y), Color.Cyan
+            );
+
+            // Texto verde para EVENT
+            Color eventTextColor = Color.Green;
+
+            Graphics.Renderer.DrawString(
+                "EVENT", Graphics.EntityNameFont, x - (int)Math.Ceiling(eventTextSize.X / 2f), (int)y - eventTextSize.Y, 1,
+                eventTextColor, true, null, Color.FromArgb(borderColor.ToArgb())
+            );
+
+            y += eventTextSize.Y - 2;
+        }
+
+        var textSize = Graphics.Renderer.MeasureText(name, Graphics.EntityNameFont, 1);
 
         if (backgroundColor != Color.Transparent)
         {
@@ -1555,6 +1638,9 @@ public partial class Entity : IEntity
             textColor, true, null, Color.FromArgb(borderColor.ToArgb())
         );
     }
+
+
+
 
     public float GetLabelLocation(LabelType type)
     {
