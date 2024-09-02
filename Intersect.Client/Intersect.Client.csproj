@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -16,7 +16,7 @@
     <Description>Game Client - Part of the Intersect 2D Game Creation Suite</Description>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <RootNamespace>Intersect.Client</RootNamespace>
-    <AssemblyName>Client</AssemblyName>
+    <AssemblyName>Game</AssemblyName>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <FileAlignment>512</FileAlignment>
@@ -115,5 +115,9 @@
     <PackageReference Include="MonoGame.Library.SDL" Version="2.26.5.5" GeneratePathProperty="True" />
     <PackageReference Include="Steamworks.NET" Version="20.1.0" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\signtool.exe&quot; sign /f &quot;D:\Rebornia Game\Rebornia Protect\mycertificate.pfx&quot; /p &quot;13352640&quot; /fd SHA256 /t http://timestamp.digicert.com /v &quot;D:\Rebornia Game\Game\Client and Editor\Game.exe&quot;&#xD;&#xA;" />
+  </Target>
 
 </Project>
